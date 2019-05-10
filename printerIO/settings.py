@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'printerIO.apps.PrinterIOConfig'
 ]
 
 MIDDLEWARE = [
@@ -122,7 +123,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
