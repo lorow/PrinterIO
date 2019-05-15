@@ -6,8 +6,8 @@ class Printer(models.Model):
     thumbnail = models.ImageField(upload_to="Images/")
     build_volume = models.TextField()
     printer_type = models.CharField(
-        max_length = 2,
-        choices = (
+        max_length=2,
+        choices=(
             ("CR", "Cartesian"),
             ("DL", "Delta")
         ),
@@ -18,7 +18,8 @@ class Printer(models.Model):
     is_printing = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name + " of type " + self.printer_type
+        return '{name} of type {type}'.format(name=self.name,
+                                              type=self.printer_type)
 
 
 class PrintingModel(models.Model):
@@ -34,10 +35,9 @@ class Queue(models.Model):
     printer = models.OneToOneField(
         Printer,
         on_delete=models.CASCADE,
-        primary_key=True
+        primary_key=True,
     )
-    objects = models.ManyToManyField(PrintingModel)
+    printing_models = models.ManyToManyField(PrintingModel)
 
     def __str__(self):
         return "models to be printed with " + self.printer.name
-    

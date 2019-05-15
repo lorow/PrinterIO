@@ -2,6 +2,6 @@ from rest_framework import routers
 from printerIO import views
 
 router = routers.DefaultRouter()
-
-router.register('users', views.UserViewSet)
-router.register('groups', views.GroupViewSet)
+router.register('model', views.PrintingModelViewSet)
+router.register('printer', views.PrinterViewSet)
+router.register('queue', views.QueueViewSet)

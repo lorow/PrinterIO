@@ -1,13 +1,19 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from printerIO.serializers import GroupSerializer, UserSerializer
+from printerIO.serializers import *
+from printerIO.models import *
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class PrintingModelViewSet(viewsets.ModelViewSet):
+    queryset = PrintingModel.objects.all()
+    serializer_class = PrintingModelSerializer
 
 
-class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+class PrinterViewSet(viewsets.ModelViewSet):
+    queryset = Printer.objects.all()
+    serializer_class = PrinterSerializer
+
+
+class QueueViewSet(viewsets.ModelViewSet):
+    view_name = "QueueViewSet"
+    queryset = Queue.objects.all()
+    serializer_class = QueueSerializer

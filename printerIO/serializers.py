@@ -1,14 +1,22 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from printerIO.models import *
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class PrintingModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('url', 'email', 'username', 'groups')
+        model = PrintingModel
+        fields = ('id', 'file', 'name', 'thing_dimensions')
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class PrinterSerializer(serializers.ModelSerializer):
     class Meta:
-        model =  Group
-        fields = ('url', 'name')
+        model = Printer
+        fields = ('id', 'name', 'thumbnail', 'build_volume',
+                  'printer_type', 'ip_address', 'port_number',
+                  'is_printing')
+
+
+class QueueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Queue
+        fields = ("__all__")
