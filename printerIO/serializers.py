@@ -17,6 +17,7 @@ class PrinterSerializer(serializers.ModelSerializer):
 
 
 class QueueSerializer(serializers.ModelSerializer):
+    printing_models = PrintingModelSerializer(read_only=True, many=True)
     class Meta:
         model = Queue
-        fields = ("__all__")
+        fields = ('printer', 'printing_models')

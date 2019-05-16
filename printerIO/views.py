@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from printerIO.serializers import *
 from printerIO.models import *
+from rest_framework import response
 
 
 class PrintingModelViewSet(viewsets.ModelViewSet):
@@ -14,6 +15,5 @@ class PrinterViewSet(viewsets.ModelViewSet):
 
 
 class QueueViewSet(viewsets.ModelViewSet):
-    view_name = "QueueViewSet"
     queryset = Queue.objects.all()
     serializer_class = QueueSerializer
