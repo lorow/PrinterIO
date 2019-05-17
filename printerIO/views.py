@@ -1,6 +1,8 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from printerIO.serializers import *
 from printerIO.models import *
+from printerIO.selectors import get_queues
 from rest_framework import response
 
 
@@ -14,6 +16,10 @@ class PrinterViewSet(viewsets.ModelViewSet):
     serializer_class = PrinterSerializer
 
 
-class QueueViewSet(viewsets.ModelViewSet):
-    queryset = Queue.objects.all()
-    serializer_class = QueueSerializer
+class QueueList(APIView):
+    queryset = Queue.objects.all()  # due to permissions
+
+    def get(self, request):
+        queues = get_queues()
+        serializer = QueueSerializer(queues, many=True)
+        return response.Response(serializer.data)

@@ -4,3 +4,4 @@ from django.contrib import admin
 admin.site.register(Printer)
 admin.site.register(PrintingModel)
 admin.site.register(Queue)
+admin.site.register(PrintedModelQuality)

@@ -21,3 +21,11 @@ class QueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Queue
         fields = ('printer', 'printing_models')
+
+
+class PrintingQualitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrintedModelQuality
+        fields = ('printer', 'model', 'quality_number')
+
+

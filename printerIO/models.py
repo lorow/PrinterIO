@@ -1,7 +1,9 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Printer(models.Model):
+    objects = models.Manager()
     name = models.TextField()
     thumbnail = models.ImageField(upload_to="Images/")
     build_volume = models.TextField()
@@ -23,6 +25,7 @@ class Printer(models.Model):
 
 
 class PrintingModel(models.Model):
+    objects = models.Manager()
     file = models.FileField()
     name = models.TextField()
     thing_dimensions = models.TextField()
@@ -32,6 +35,7 @@ class PrintingModel(models.Model):
 
 
 class Queue(models.Model):
+    objects = models.Manager()
     printer = models.OneToOneField(
         Printer,
         on_delete=models.CASCADE,
@@ -41,3 +45,14 @@ class Queue(models.Model):
 
     def __str__(self):
         return "models to be printed with " + self.printer.name
+
+
+class PrintedModelQuality(models.Model):
+    objects = models.Manager()
+    printer = models.ForeignKey(Printer,
+                                on_delete=models.CASCADE)
+    model = models.ForeignKey(PrintingModel,
+                              on_delete=models.CASCADE)
+    quality_number = models.IntegerField(
+        validators=[MaxValueValidator(10), MinValueValidator(1)]
+    )
