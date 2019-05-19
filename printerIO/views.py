@@ -16,6 +16,11 @@ class PrinterViewSet(viewsets.ModelViewSet):
     serializer_class = PrinterSerializer
 
 
+class QualityViewSet(viewsets.ModelViewSet):
+    queryset = PrintedModelQuality.objects.all()
+    serializer_class = PrintingQualitySerializer
+
+
 class QueueList(APIView):
     queryset = Queue.objects.all()  # due to permissions
 

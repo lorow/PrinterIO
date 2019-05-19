@@ -22,7 +22,8 @@ from printerIO.views import QueueList
 urlpatterns = [
     path('', include_docs_urls(title="PrinterIO API guide")),
     path('api/', include(router.urls)),
-    path('api/queue2', QueueList.as_view()),
+    path('api/queue', QueueList.as_view()),
+
     path('admin/', admin.site.urls),
     path('api/auth/', include('rest_framework.urls'))
 ]

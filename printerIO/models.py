@@ -50,8 +50,10 @@ class Queue(models.Model):
 class PrintedModelQuality(models.Model):
     objects = models.Manager()
     printer = models.ForeignKey(Printer,
+                                related_name="used_printer",
                                 on_delete=models.CASCADE)
     model = models.ForeignKey(PrintingModel,
+                              related_name="used_model",
                               on_delete=models.CASCADE)
     quality_number = models.IntegerField(
         validators=[MaxValueValidator(10), MinValueValidator(1)]
