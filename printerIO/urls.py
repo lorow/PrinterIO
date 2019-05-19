@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
 from printerIO.routers import router
-from printerIO.views import QueueList
+from printerIO.views import QueueListApi, QueueDetailApi
 
 urlpatterns = [
     path('', include_docs_urls(title="PrinterIO API guide")),
     path('api/', include(router.urls)),
-    path('api/queue', QueueList.as_view()),
+    path('api/queue/', QueueListApi.as_view()),
+    path('api/queue/<int:pk>/', QueueDetailApi.as_view()),
 
     path('admin/', admin.site.urls),
     path('api/auth/', include('rest_framework.urls'))
