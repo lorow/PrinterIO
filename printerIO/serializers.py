@@ -17,16 +17,19 @@ class PrinterSerializer(serializers.ModelSerializer):
 
 
 class QueueSerializer(serializers.ModelSerializer):
-    printing_models = PrintingModelSerializer(read_only=True, many=True)
+    printing_models = PrintingModelSerializer(read_only=True,many=True)
+    printing_models_id = serializers.PrimaryKeyRelatedField(
+        queryset=PrintingModel.objects.all(), source='printing_models', write_only=True, many=True
+    )
 
     class Meta:
         model = Queue
-        fields = ('printer', 'printing_models')
+        fields = ('printer', 'printing_models', 'printing_models_id')
 
 
 class PrintingQualitySerializer(serializers.ModelSerializer):
-    printer = PrinterSerializer(read_only=True)
-    model = PrintingModelSerializer(read_only=True)
+    printer = PrinterSerializer()
+    model = PrintingModelSerializer()
 
     class Meta:
         model = PrintedModelQuality

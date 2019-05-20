@@ -1,10 +1,9 @@
 from rest_framework import viewsets
-from rest_framework.views import APIView
 from printerIO.serializers import *
 from printerIO.models import *
 from printerIO.selectors import get_queues, get_queue
 from rest_framework.response import Response
-
+from rest_framework import status
 
 class PrintingModelViewSet(viewsets.ModelViewSet):
     queryset = PrintingModel.objects.all()
@@ -21,24 +20,22 @@ class QualityViewSet(viewsets.ModelViewSet):
     serializer_class = PrintingQualitySerializer
 
 
-class QueueListApi(APIView):
-    """An endpoint responsible for listing all running queues"""
+class QueueViewSet(viewsets.ModelViewSet):
+    """ Viewset for controlling the queue"""
+    queryset = Queue.objects.all()
+    serializer_class = QueueSerializer
 
-    queryset = Queue.objects.all()  # due to permissions
-
-    def get(self, request):
+    def list(self, request, *args, **kwargs):
         queues = get_queues()
         serializer = QueueSerializer(queues, many=True)
         return Response(serializer.data)
 
-
-class QueueDetailApi(APIView):
-    """endpoint for listing details of one specific queue"""
-
-    queryset = Queue.objects.all()
-
-    def get(self, request, pk):
-        queue = get_queue(queue_id=pk)
+    def retrieve(self, request, *args, **kwargs):
+        queue = get_queue(queue_id=kwargs['pk'])
         data = QueueSerializer(queue)
         return Response(data.data)
 
+
+    # def create(self, request, *args, **kwargs):
+    #     print(request.data)
+    #     return  Response(status=status.HTTP_200_OK)
