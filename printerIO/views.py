@@ -2,8 +2,10 @@ from rest_framework import viewsets
 from printerIO.serializers import *
 from printerIO.models import *
 from printerIO.selectors import get_queues, get_queue
+from printerIO.services import create_queue
 from rest_framework.response import Response
 from rest_framework import status
+
 
 class PrintingModelViewSet(viewsets.ModelViewSet):
     queryset = PrintingModel.objects.all()
@@ -21,7 +23,6 @@ class QualityViewSet(viewsets.ModelViewSet):
 
 
 class QueueViewSet(viewsets.ModelViewSet):
-    """ Viewset for controlling the queue"""
     queryset = Queue.objects.all()
     serializer_class = QueueSerializer
 
@@ -35,7 +36,10 @@ class QueueViewSet(viewsets.ModelViewSet):
         data = QueueSerializer(queue)
         return Response(data.data)
 
+    def create(self, request, *args, **kwargs):
 
-    # def create(self, request, *args, **kwargs):
-    #     print(request.data)
-    #     return  Response(status=status.HTTP_200_OK)
+        serializer = QueueSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        create_queue(**serializer.validated_data)
+
+        return Response(status=status.HTTP_200_OK)
