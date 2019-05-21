@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Printer(models.Model):
     objects = models.Manager()
     name = models.TextField()
-    thumbnail = models.ImageField(upload_to="Images/")
+    thumbnail = models.ImageField(upload_to="Images/", default="Images/Group_21.png")
     build_volume = models.TextField()
     printer_type = models.CharField(
         max_length=2,

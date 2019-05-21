@@ -42,4 +42,4 @@ class QueueViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         create_queue(**serializer.validated_data)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
