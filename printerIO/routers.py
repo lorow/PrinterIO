@@ -1,8 +1,14 @@
 from rest_framework import routers
+from rest_framework_extensions.routers import NestedRouterMixin
 from printerIO import views
 
-router = routers.DefaultRouter()
-router.register('model', views.PrintingModelViewSet)
-router.register('printer', views.PrinterViewSet)
-router.register('quality', views.QualityViewSet)
-router.register('queue', views.QueueViewSet)
+class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
+    pass
+
+router = NestedDefaultRouter()
+router.register('models', views.PrintingModelViewSet)
+router.register('printers', views.PrinterViewSet)\
+    .register('queues', views.TestingQueueViewSet, basename="printer-queue",
+              parents_query_lookups=['printer'])
+router.register('results', views.QualityViewSet)
+
