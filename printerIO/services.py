@@ -8,3 +8,6 @@ def create_queue(printer: Printer, printing_models: List) -> Queue:
     queue.save()
 
     return queue
+
+def delete_queue(queue: Queue) -> None:
+    queue.delete()
