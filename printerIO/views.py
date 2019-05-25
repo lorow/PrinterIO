@@ -1,10 +1,6 @@
-from rest_framework import viewsets
-from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
+from rest_framework import viewsets, status
+from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import BasicAuthentication
 from rest_framework_extensions.mixins import NestedViewSetMixin
 from printerIO.serializers import *
 from printerIO.models import *
@@ -18,8 +14,6 @@ class PrintingModelViewSet(viewsets.ModelViewSet):
 
 
 class PrinterViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
-    authentication_classes = (BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
     queryset = Printer.objects.all()
     serializer_class = PrinterSerializer
 
@@ -29,18 +23,14 @@ class QualityViewSet(viewsets.ModelViewSet):
     serializer_class = PrintingQualitySerializer
 
 
-class QueuesListApi(APIView):
-    authentication_classes = (BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
-    def get(self, request, pk=None):
-        queues = get_queues({'parent_lookup_printer':pk})
+class QueuesListApi(ListAPIView):
+    def get(self, request, *args, **kwargs):
+        queues = get_queues({'parent_lookup_printer': kwargs['printer_id']})
         data = QueueSerializer(queues, many=True)
         return Response(data.data, status=status.HTTP_200_OK)
 
 
 class QueueCreateApi(CreateAPIView):
-    permission_classes = (AllowAny,)
-
     class InputSerializer(serializers.Serializer):
         printing_models_id = serializers.PrimaryKeyRelatedField(source='printing_models',
                                                                 write_only=True,
@@ -53,32 +43,25 @@ class QueueCreateApi(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.InputSerializer(data=request.data)
-        print(serializer.is_valid())
-        print(serializer.validated_data)
+        if serializer.is_valid():
+            try:
+                create_queue(kwargs['printer_id'], serializer.data)
+                return Response(data={"status": "created successfully"}, status=status.HTTP_202_ACCEPTED)
+            except Exception:
+                return Response(data={"status": "printer with given ID does not exists or it already has a queue"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TestingQueueViewSet(NestedViewSetMixin, viewsets.GenericViewSet):
-
-
-    def list(self, request, *args, **kwargs):
-        queryset = get_queues(kwargs)
-        serializer = QueueSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        serializer = QueueSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        create_queue(**serializer.validated_data)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class QueueDeleteApi(DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
-        queue = get_queue(kwargs['pk'])
-        delete_queue(queue)
-
-        return Response("deleted", status=status.HTTP_202_ACCEPTED)
-
-    def partial_update(self, request, *args, **kwargs):
-        pass
+        queue = get_queue(kwargs['printer_id'])
+        try:
+            delete_queue(queue)
+            return Response(data={"status": "The queue has been successfully deleted"},
+                            status=status.HTTP_200_OK)
+        except Exception:
+            return Response(data={"status": "The queue you're trying to delete does not exist"},
+                            status=status.HTTP_400_BAD_REQUEST)

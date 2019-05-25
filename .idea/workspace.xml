@@ -4,10 +4,7 @@
     <list default="true" id="2883e054-75b3-49f3-b93b-43dd3792d78a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/printerIO/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/selectors.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/selectors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/printerIO/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/printerIO/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/printerIO/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/views.py" afterDir="false" />
     </list>
@@ -22,50 +19,37 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/printerIO/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="48" column="33" selection-start-line="48" selection-start-column="33" selection-end-line="48" selection-end-column="33" />
+            <state relative-caret-position="154">
+              <caret line="28" column="49" lean-forward="true" selection-start-line="28" selection-start-column="49" selection-end-line="28" selection-end-column="49" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
+                <element signature="e#1574#2033#0" />
+                <element signature="e#2073#2102#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/rest_framework/relations.py">
+        <entry file="file://$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="490" column="23" selection-start-line="490" selection-start-column="23" selection-end-line="490" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/printerIO/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="382">
-              <caret line="104" column="62" lean-forward="true" selection-start-line="104" selection-start-column="62" selection-end-line="104" selection-end-column="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/printerIO/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="516">
-              <caret line="43" column="58" selection-start-line="43" selection-start-column="45" selection-end-line="43" selection-end-column="58" />
+            <state relative-caret-position="176">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
               <folding>
-                <element signature="e#0#28#0" expanded="true" />
+                <element signature="e#0#32#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/printerIO/serializers.py">
+        <entry file="file://$PROJECT_DIR$/printerIO/services.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="20" column="49" selection-start-line="20" selection-start-column="49" selection-end-line="20" selection-end-column="49" />
+            <state relative-caret-position="88">
+              <caret line="4" column="27" lean-forward="true" selection-start-line="4" selection-start-column="27" selection-end-line="4" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#43#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -73,10 +57,22 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/printerIO/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="26" column="4" lean-forward="true" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+            <state relative-caret-position="140">
+              <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
               <folding>
                 <element signature="e#633#665#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/printerIO/routers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="12" column="48" lean-forward="true" selection-start-line="12" selection-start-column="48" selection-end-line="12" selection-end-column="48" />
+              <folding>
+                <element signature="e#0#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,18 +102,18 @@
         <option value="$PROJECT_DIR$/printerIO/tests.py" />
         <option value="$PROJECT_DIR$/printerIO/tests/__init__.py" />
         <option value="$PROJECT_DIR$/printerIO/models.py" />
-        <option value="$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py" />
         <option value="$PROJECT_DIR$/printerIO/serializers.py" />
-        <option value="$PROJECT_DIR$/printerIO/services.py" />
-        <option value="$PROJECT_DIR$/printerIO/routers.py" />
         <option value="$PROJECT_DIR$/printerIO/selectors.py" />
         <option value="$PROJECT_DIR$/printerIO/settings.py" />
+        <option value="$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py" />
         <option value="$PROJECT_DIR$/printerIO/urls.py" />
         <option value="$PROJECT_DIR$/printerIO/views.py" />
+        <option value="$PROJECT_DIR$/printerIO/services.py" />
+        <option value="$PROJECT_DIR$/printerIO/routers.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="2934" />
     <option name="y" value="-17" />
     <option name="width" value="1936" />
@@ -131,7 +127,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -166,6 +161,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -345,19 +341,26 @@
       <option name="project" value="LOCAL" />
       <updated>1558551629741</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="start moving from ViewSets to ApiViews, write QueuesListApi ApiView,&#10;create QueueCreateApi ApiView. Disable list action of QueuesListApi due &#10;to some weird behavior">
+      <created>1558726151481</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1558726151481</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="2552" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14120126" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14120126" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32917964" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.25649014" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25649014" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3655244" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -386,7 +389,8 @@
     <MESSAGE value="Add QueueDetailApi view, create tests file" />
     <MESSAGE value="write unittest for create_query service, add default thumbnail for&#10;printers, make create action of queue endpoint return data" />
     <MESSAGE value="move to a nested router, add a testing queue GenericViewSet, change setting to allow all hosts" />
-    <option name="LAST_COMMIT_MESSAGE" value="move to a nested router, add a testing queue GenericViewSet, change setting to allow all hosts" />
+    <MESSAGE value="start moving from ViewSets to ApiViews, write QueuesListApi ApiView,&#10;create QueueCreateApi ApiView. Disable list action of QueuesListApi due &#10;to some weird behavior" />
+    <option name="LAST_COMMIT_MESSAGE" value="start moving from ViewSets to ApiViews, write QueuesListApi ApiView,&#10;create QueueCreateApi ApiView. Disable list action of QueuesListApi due &#10;to some weird behavior" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
@@ -442,16 +446,6 @@
     <entry file="file://$PROJECT_DIR$/media/media/JA5A5S_3dbenchy-1.gcode">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/rest_framework_extensions/mixins.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="118">
@@ -477,13 +471,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-3730">
           <caret line="105" column="6" selection-start-line="105" selection-start-column="6" selection-end-line="105" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/rest_framework/generics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="25" column="31" lean-forward="true" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
         </state>
       </provider>
     </entry>
@@ -522,26 +509,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printerIO/routers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="49" selection-start-line="9" selection-start-column="49" selection-end-line="9" selection-end-column="49" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/printerIO/services.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#43#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/selectors.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -552,10 +519,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/rest_framework/relations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10318">
+          <caret line="490" column="23" selection-start-line="490" selection-start-column="23" selection-end-line="490" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/printerIO/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="20" column="49" selection-start-line="20" selection-start-column="49" selection-end-line="20" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/rest_framework/generics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="194" column="6" selection-start-line="194" selection-start-column="6" selection-end-line="194" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="516">
-          <caret line="43" column="58" selection-start-line="43" selection-start-column="45" selection-end-line="43" selection-end-column="58" />
+        <state relative-caret-position="396">
+          <caret line="18" column="51" lean-forward="true" selection-start-line="18" selection-start-column="51" selection-end-line="18" selection-end-column="51" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
@@ -564,41 +552,59 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="104" column="62" lean-forward="true" selection-start-line="104" selection-start-column="62" selection-end-line="104" selection-end-column="62" />
+        <state relative-caret-position="690">
+          <caret line="104" column="62" selection-start-line="104" selection-start-column="62" selection-end-line="104" selection-end-column="62" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/rest_framework/relations.py">
+    <entry file="file://$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="490" column="23" selection-start-line="490" selection-start-column="23" selection-end-line="490" selection-end-column="23" />
+        <state relative-caret-position="176">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/printerIO/serializers.py">
+    <entry file="file://$PROJECT_DIR$/printerIO/services.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="20" column="49" selection-start-line="20" selection-start-column="49" selection-end-line="20" selection-end-column="49" />
+        <state relative-caret-position="88">
+          <caret line="4" column="27" lean-forward="true" selection-start-line="4" selection-start-column="27" selection-end-line="4" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#43#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="26" column="4" lean-forward="true" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+        <state relative-caret-position="140">
+          <caret line="14" column="3" lean-forward="true" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
           <folding>
             <element signature="e#633#665#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/printerIO/routers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="12" column="48" lean-forward="true" selection-start-line="12" selection-start-column="48" selection-end-line="12" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="48" column="33" selection-start-line="48" selection-start-column="33" selection-end-line="48" selection-end-column="33" />
+        <state relative-caret-position="154">
+          <caret line="28" column="49" lean-forward="true" selection-start-line="28" selection-start-column="49" selection-end-line="28" selection-end-column="49" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
+            <element signature="e#1574#2033#0" />
+            <element signature="e#2073#2102#0" />
           </folding>
         </state>
       </provider>
