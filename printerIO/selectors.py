@@ -8,5 +8,5 @@ def get_queues(queue_parameters=None) -> Iterable[Queue]:
     return Queue.objects.all().prefetch_related('printing_models')
 
 
-def get_queue(queue_id:int ) -> Queue:
+def get_queue(queue_id: int) -> Queue:
     return Queue.objects.get(pk=queue_id)
