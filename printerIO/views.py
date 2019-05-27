@@ -116,17 +116,3 @@ class RemoveModelsFromQueueApi(APIView):
             return Response(data={"status": "Models have been deleted successfully"})
 
         return Response(data={"status": "Given model or printer does not exist"}, )
-
-
-class SwapPrintersInQueueApi(APIView):
-    class InputSerializer(serializers.Serializer):
-        printer_id = serializers.PrimaryKeyRelatedField(
-            source='printer',
-            write_only=True,
-            many=False,
-            queryset=Printer.objects.all(),
-            help_text="ID of the printer you want this queue to be transferred to"
-        )
-
-    def patch(self, request, *args, **kwargs):
-        return Response()
