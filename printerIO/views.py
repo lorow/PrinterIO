@@ -6,7 +6,7 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 from printerIO.serializers import *
 from printerIO.models import *
 from printerIO.selectors import get_queues, get_queue
-from printerIO.services import create_queue, delete_queue, add_models_to_queue
+from printerIO.services import create_queue, delete_queue, add_models_to_queue, remove_models_from_queue
 
 
 class PrintingModelViewSet(viewsets.ModelViewSet):
@@ -34,10 +34,10 @@ class QueuesListApi(ListAPIView):
 class QueueCreateApi(CreateAPIView):
     class InputSerializer(serializers.Serializer):
         printing_models_ids = serializers.PrimaryKeyRelatedField(source='printing_models',
-                                                                write_only=True,
-                                                                many=True,
-                                                                queryset=PrintingModel.objects.all(),
-                                                                help_text="Ids of models you want to add to the queue")
+                                                                 write_only=True,
+                                                                 many=True,
+                                                                 queryset=PrintingModel.objects.all(),
+                                                                 help_text="Ids of models you want to add to the queue")
 
     def get_serializer(self):
         return self.InputSerializer()
@@ -70,7 +70,8 @@ class QueueDeleteApi(DestroyAPIView):
 
 
 class AddModelsToQueueApi(APIView):
-    """Let's you add one or more models to the existing queue, which is identified by the supplied printer_id"""
+    """Lets you add one or more models to the existing queue, which is identified by the supplied printer_id"""
+
     class InputSerializer(serializers.Serializer):
         printing_model_ids = serializers.PrimaryKeyRelatedField(
             source='printing_models',
@@ -88,12 +89,14 @@ class AddModelsToQueueApi(APIView):
         if serializer.is_valid():
             queue = get_queue(kwargs['printer_id'])
             add_models_to_queue(queue, serializer.validated_data)
+            return Response(data={"status": "The models have been added successfully"}, status=status.HTTP_200_OK)
 
-        return Response(data={"status":"The models has been added successfully"}, status=status.HTTP_200_OK)
+        return Response(data={"status": "something went wrong"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RemoveModelsFromQueueApi(APIView):
-    """Let's you remove one or more models from the existing queue, which is identified by the supplied printer_id"""
+    """Lets you remove one or more models from the existing queue, which is identified by the supplied printer_id"""
+
     class InputSerializer(serializers.Serializer):
         printing_model_ids = serializers.PrimaryKeyRelatedField(
             source='printing_models',
@@ -106,7 +109,13 @@ class RemoveModelsFromQueueApi(APIView):
         return self.InputSerializer()
 
     def patch(self, request, *args, **kwargs):
-        return Response()
+        serializer = self.InputSerializer(data=request.data)
+        if serializer.is_valid():
+            queue = get_queue(kwargs['printer_id'])
+            remove_models_from_queue(queue, serializer.validated_data)
+            return Response(data={"status": "Models have been deleted successfully"})
+
+        return Response(data={"status": "Given model or printer does not exist"}, )
 
 
 class SwapPrintersInQueueApi(APIView):
