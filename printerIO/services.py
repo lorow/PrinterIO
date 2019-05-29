@@ -1,6 +1,39 @@
 from printerIO.models import Queue, Printer
 from printerIO.utils import flatten_list
+from printerIO.selectors import get_printer
 from collections import OrderedDict
+from printerIO.utils import validate_build_volume
+from rest_framework.exceptions import ValidationError
+from django.contrib.auth.hashers import make_password
+
+
+def create_printer(name: str, build_volume: str, printer_type:str, username:str, password:str, thumbnail=None,
+                   ip_address=None, port_number:int=None, is_printing:bool=False,) -> Printer:
+
+    if not build_volume or not validate_build_volume(build_volume):
+        raise ValidationError(detail="The provided build volume is invalid: {{build_volume}}"
+                              .format(build_volume=build_volume))
+
+    password_to_save = make_password(password)
+
+    printer = Printer.objects.create()
+    printer.name = name
+    printer.build_volume = build_volume
+    printer.printer_type = printer_type
+    printer.username = username
+    printer.password = password_to_save
+    printer.thumbnail = thumbnail
+    printer.ip_address = ip_address
+    printer.port_number = port_number
+    printer.is_printing = is_printing
+
+    printer.save()
+    return printer
+
+
+def delete_printer(printer_id: int) -> None:
+    printer = get_printer(printer_id)
+    printer.delete()
 
 
 def create_queue(printer: int, printing_models: OrderedDict) -> Queue:
@@ -30,4 +63,3 @@ def remove_models_from_queue(queue: Queue, models_to_remove: dict) -> Queue:
 
     queue.save()
     return queue
-

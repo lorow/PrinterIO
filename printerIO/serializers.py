@@ -13,18 +13,7 @@ class PrinterSerializer(serializers.ModelSerializer):
         model = Printer
         fields = ('id', 'name', 'thumbnail', 'build_volume',
                   'printer_type', 'ip_address', 'port_number',
-                  'is_printing')
-
-
-class QueueSerializer(serializers.ModelSerializer):
-    printing_models = PrintingModelSerializer(read_only=True,many=True, required=False)
-    printing_models_id = serializers.PrimaryKeyRelatedField(
-        queryset=PrintingModel.objects.all(), source='printing_models', write_only=True, many=True, required=False
-    )
-
-    class Meta:
-        model = Queue
-        fields = ('printer', 'printing_models', 'printing_models_id')
+                  'is_printing', 'username', 'password')
 
 
 class PrintingQualitySerializer(serializers.ModelSerializer):

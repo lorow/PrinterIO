@@ -9,7 +9,7 @@ from collections import OrderedDict
 class CreateQueueTest(TestCase):
 
     def setUp(self):
-        file1 = File(open("media/JA5A5S_3dbenchy-1_a2l0HZl.gcode"))
+        file1 = File(open("media/JA5A5S_3dbenchy-1_VntpwQf.gcode"))
         file2 = File(open("media/JA5A5S_3dbenchy-1.gcode"))
 
         self.printer = Printer.objects.create(

@@ -14,15 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from printerIO.routers import router
-from printerIO.views import QueuesListApi, QueueCreateApi, QueueDeleteApi, AddModelsToQueueApi, \
-    RemoveModelsFromQueueApi
+from printerIO.views import *
+
 
 urlpatterns = [
     path('', include_docs_urls(title="PrinterIO API guide")),
     path('api/', include(router.urls)),
+
+    path('api/printers/', PrinterListApi.as_view()),
+    path('api/printers/<int:printer_id>/', PrinterDetailAPi.as_view()),
+    path('api/printers/create/', PrinterCreateAPi.as_view()),
+    path('api/printer/<int:printer_id>/delete/', PrinterDeleteAPi.as_view()),
 
     path('api/printers/<int:printer_id>/queue/', QueuesListApi.as_view()),
     path('api/printers/<int:printer_id>/create_queue/', QueueCreateApi.as_view()),
@@ -33,3 +40,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls',  namespace='rest_framework'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'media/(?P<path>.*)$', serve,{
+            'document_root': settings.MEDIA_ROOT,
+        })
+    ]
