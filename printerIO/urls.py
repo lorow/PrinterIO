@@ -29,7 +29,8 @@ urlpatterns = [
     path('api/printers/', PrinterListApi.as_view()),
     path('api/printers/<int:printer_id>/', PrinterDetailAPi.as_view()),
     path('api/printers/create/', PrinterCreateAPi.as_view()),
-    path('api/printer/<int:printer_id>/delete/', PrinterDeleteAPi.as_view()),
+    path('api/printers/<int:printer_id>/delete/', PrinterDeleteAPi.as_view()),
+    path('api/printers/<int:printer_id>/update/', PrinterUpdateAPi.as_view()),
 
     path('api/printers/<int:printer_id>/queue/', QueuesListApi.as_view()),
     path('api/printers/<int:printer_id>/create_queue/', QueueCreateApi.as_view()),
@@ -43,7 +44,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
-        re_path(r'media/(?P<path>.*)$', serve,{
+        re_path(r'media/(?P<path>.*)$', serve, {
             'document_root': settings.MEDIA_ROOT,
         })
     ]

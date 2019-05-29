@@ -2,32 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2883e054-75b3-49f3-b93b-43dd3792d78a" name="Default Changelist" comment="start moving from ViewSets to ApiViews, write QueuesListApi ApiView,&#10;create QueueCreateApi ApiView. Disable list action of QueuesListApi due &#10;to some weird behavior">
-      <change afterPath="$PROJECT_DIR$/printerIO/tests/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/printerIO/tests/utils/test_validate_build_volume.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/printerio.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/printerio.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/Images/Group_21.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/Images/Mask_Group_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/JA5A5S_3dbenchy-1.gcode" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/JA5A5S_3dbenchy-1_a2l0HZl.gcode" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0002_auto_20190501_2046.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0003_printingmodel.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0004_queue.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0005_auto_20190515_1716.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0006_auto_20190515_2024.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/migrations/0007_printedmodelquality.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/selectors.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/selectors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/printerIO/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/printerIO/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/printerIO/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/printerIO/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,8 +19,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/printerIO/services.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="426">
-                  <caret line="60" column="57" lean-forward="true" selection-start-line="60" selection-start-column="57" selection-end-line="60" selection-end-column="57" />
+                <state relative-caret-position="396">
+                  <caret line="18" column="38" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
                   <folding>
                     <element signature="e#0#43#0" expanded="true" />
                   </folding>
@@ -58,8 +35,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/printerIO/views.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="294">
-                  <caret line="100" column="102" selection-start-line="100" selection-start-column="102" selection-end-line="100" selection-end-column="102" />
+                <state relative-caret-position="118">
+                  <caret line="98" column="45" lean-forward="true" selection-start-line="98" selection-start-column="45" selection-end-line="98" selection-end-column="45" />
                   <folding>
                     <element signature="e#0#43#0" expanded="true" />
                     <element signature="e#2386#3207#0" />
@@ -75,8 +52,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/printerIO/urls.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="140">
-                  <caret line="30" column="43" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
+                <state relative-caret-position="668">
+                  <caret line="32" column="22" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
                   <folding>
                     <element signature="e#633#665#0" expanded="true" />
                   </folding>
@@ -119,9 +96,9 @@
         <option value="$PROJECT_DIR$/printerIO/utils.py" />
         <option value="$PROJECT_DIR$/printerIO/tests/services/test_create_queue.py" />
         <option value="$PROJECT_DIR$/printerIO/tests/utils/test_validate_build_volume.py" />
-        <option value="$PROJECT_DIR$/printerIO/services.py" />
-        <option value="$PROJECT_DIR$/printerIO/urls.py" />
         <option value="$PROJECT_DIR$/printerIO/views.py" />
+        <option value="$PROJECT_DIR$/printerIO/urls.py" />
+        <option value="$PROJECT_DIR$/printerIO/services.py" />
       </list>
     </option>
   </component>
@@ -367,12 +344,12 @@
     <frame x="-8" y="-8" width="2576" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.105594955" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.105594955" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32917964" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25649014" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.25649014" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3655244" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -645,16 +622,6 @@
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/h5py/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/printerIO/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="30" column="43" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
-          <folding>
-            <element signature="e#633#665#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="88">
@@ -665,10 +632,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/printerIO/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="668">
+          <caret line="32" column="22" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
+          <folding>
+            <element signature="e#633#665#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="100" column="102" selection-start-line="100" selection-start-column="102" selection-end-line="100" selection-end-column="102" />
+        <state relative-caret-position="118">
+          <caret line="98" column="45" lean-forward="true" selection-start-line="98" selection-start-column="45" selection-end-line="98" selection-end-column="45" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
             <element signature="e#2386#3207#0" />
@@ -682,8 +659,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/printerIO/services.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="60" column="57" lean-forward="true" selection-start-line="60" selection-start-column="57" selection-end-line="60" selection-end-column="57" />
+        <state relative-caret-position="396">
+          <caret line="18" column="38" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>

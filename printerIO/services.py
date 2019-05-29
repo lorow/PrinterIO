@@ -7,8 +7,8 @@ from rest_framework.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 
 
-def create_printer(name: str, build_volume: str, printer_type:str, username:str, password:str, thumbnail=None,
-                   ip_address=None, port_number:int=None, is_printing:bool=False,) -> Printer:
+def create_printer(name: str, build_volume: str, printer_type: str, username: str, password: str, thumbnail=None,
+                   ip_address=None, port_number: int = None, is_printing: bool = False,) -> Printer:
 
     if not build_volume or not validate_build_volume(build_volume):
         raise ValidationError(detail="The provided build volume is invalid: {{build_volume}}"
@@ -17,6 +17,7 @@ def create_printer(name: str, build_volume: str, printer_type:str, username:str,
     password_to_save = make_password(password)
 
     printer = Printer.objects.create()
+
     printer.name = name
     printer.build_volume = build_volume
     printer.printer_type = printer_type
@@ -34,6 +35,28 @@ def create_printer(name: str, build_volume: str, printer_type:str, username:str,
 def delete_printer(printer_id: int) -> None:
     printer = get_printer(printer_id)
     printer.delete()
+
+
+def update_printer(printer_id: int, name: str, build_volume: str, printer_type: str, username: str,
+                   password: str, thumbnail=None, ip_address=None,
+                   port_number: int = None, is_printing: bool = False) -> Printer:
+
+    printer = get_printer(printer_id)
+    new_password = make_password(password)
+
+    printer.name = name
+    printer.build_volume = build_volume
+    printer.printer_type = printer_type
+    printer.username = username
+    printer.password = new_password
+    printer.thumbnail = thumbnail
+    printer.ip_address = ip_address
+    printer.port_number = port_number
+    printer.is_printing = is_printing
+
+    printer.save()
+
+    return printer
 
 
 def create_queue(printer: int, printing_models: OrderedDict) -> Queue:
