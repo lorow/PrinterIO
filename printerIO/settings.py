@@ -84,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'printerio',
         'USER': 'postgres',
-        'PASSWORD': 'tandeta23',
+        'PASSWORD': 'changed_password',
         'HOST': 'localhost',
         'PORT': ''
     }
