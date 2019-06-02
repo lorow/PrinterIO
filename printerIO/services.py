@@ -2,62 +2,24 @@ from printerIO.models import Queue, Printer
 from printerIO.utils import flatten_list
 from printerIO.selectors import get_printer
 from collections import OrderedDict
-from printerIO.utils import validate_build_volume
-from rest_framework.exceptions import ValidationError
-from django.contrib.auth.hashers import make_password
+import requests
 
 
-def create_printer(name: str, build_volume: str, printer_type: str, username: str, password: str, thumbnail=None,
-                   ip_address=None, port_number: int = None, is_printing: bool = False,) -> Printer:
-
-    if not build_volume or not validate_build_volume(build_volume):
-        raise ValidationError(detail="The provided build volume is invalid: {{build_volume}}"
-                              .format(build_volume=build_volume))
-
-    password_to_save = make_password(password)
-
-    printer = Printer.objects.create()
-
-    printer.name = name
-    printer.build_volume = build_volume
-    printer.printer_type = printer_type
-    printer.username = username
-    printer.password = password_to_save
-    printer.thumbnail = thumbnail
-    printer.ip_address = ip_address
-    printer.port_number = port_number
-    printer.is_printing = is_printing
-
-    printer.save()
-    return printer
-
-
-def delete_printer(printer_id: int) -> None:
+def execute_gcode_command(printer_id:int, command:str) -> None:
     printer = get_printer(printer_id)
-    printer.delete()
+    command = command
+    command_endpoint = "/api/printer/command"
 
 
-def update_printer(printer_id: int, name: str, build_volume: str, printer_type: str, username: str,
-                   password: str, thumbnail=None, ip_address=None,
-                   port_number: int = None, is_printing: bool = False) -> Printer:
-
-    printer = get_printer(printer_id)
-    new_password = make_password(password)
-
-    printer.name = name
-    printer.build_volume = build_volume
-    printer.printer_type = printer_type
-    printer.username = username
-    printer.password = new_password
-    printer.thumbnail = thumbnail
-    printer.ip_address = ip_address
-    printer.port_number = port_number
-    printer.is_printing = is_printing
-
-    printer.save()
-
-    return printer
-
+    req = requests.post("http://{ip}:{port}{endpoint}".format(
+        ip=printer.ip_address,
+        port=printer.port_number,
+        endpoint=command_endpoint
+    ),
+                        headers={"X-Api-Key":printer.X_Api_Key,
+                                 "Content-Type":"application/json"},
+                        json={"command":command},)
+    
 
 def create_queue(printer: int, printing_models: OrderedDict) -> Queue:
     printer_object = Printer.objects.get(id=printer)

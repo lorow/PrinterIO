@@ -84,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'printerio',
         'USER': 'postgres',
-        'PASSWORD': 'changed_password',
+        'PASSWORD': 'some_password',
         'HOST': 'localhost',
         'PORT': ''
     }
@@ -125,7 +125,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+
 }
 
 

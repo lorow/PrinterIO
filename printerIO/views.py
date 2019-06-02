@@ -13,102 +13,26 @@ class PrintingModelViewSet(viewsets.ModelViewSet):
     serializer_class = PrintingModelSerializer
 
 
-# class PrinterViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
-#     queryset = Printer.objects.all()
-#     serializer_class = PrinterSerializer
-
 class QualityViewSet(viewsets.ModelViewSet):
     queryset = PrintedModelQuality.objects.all()
     serializer_class = PrintingQualitySerializer
 
 
-class PrinterListApi(ListAPIView):
-
-    def get_serializer(self, *args, **kwargs):
-        return PrinterSerializer()
-
-    def get(self, request, *args, **kwargs):
-        printers = get_printers()
-        data = PrinterSerializer(printers, many=True)
-        return Response(data.data, status=status.HTTP_200_OK)
+class PrinterViewSet(viewsets.ModelViewSet):
+    queryset = Printer.objects.all()
+    serializer_class = PrinterSerializer
 
 
-class PrinterDetailAPi(ListAPIView):
+class PrinterGCODEAPI(APIView):
 
-    def get_serializer(self, *args, **kwargs):
-        return PrinterSerializer()
+    def get(self, request, **kwargs):
+        if not "printer_id" in kwargs or not "command" in kwargs:
+            return Response(data={"status":"The printer id or command is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, *args, **kwargs):
-        try:
-            printer = get_printer(kwargs['printer_id'])
-            data = PrinterSerializer(printer)
-            return Response(data.data, status=status.HTTP_200_OK)
-        except Exception:
-            return Response({"status": "this printer does not exists"}, status=status.HTTP_404_NOT_FOUND)
+        execute_gcode_command(printer_id=kwargs["printer_id"], command=kwargs["command"])
 
-
-class PrinterCreateAPi(CreateAPIView):
-    class InputSerializer(serializers.Serializer):
-        name = serializers.CharField(help_text="The name of your printer")
-        build_volume = serializers.CharField(help_text="The usable build volume of you printer, provided as XxYxZ, "
-                                                       "for example 300x300x300")
-        printer_type = serializers.ChoiceField(["CR", "DL"], help_text="Type of your printer, CR - Cartesian, "
-                                                                       "DL - Delta")
-        username = serializers.CharField(help_text="Login to the octoprint instance")
-        password = serializers.CharField(style={'input_type': 'password'}, help_text="Your password to the octoprint account"
-                                                                                     "don't worry, it's stored securely")
-        thumbnail = serializers.ImageField(required=False, style={'input_type': 'file'}, help_text="The thumbnail you "
-                                                                                                   "want this printer"
-                                                                                                   "to be identified with")
-        ip_address = serializers.IPAddressField(default="0.0.0.0", required=False, help_text="IP address of the raspberry pi"
-                                                                                             "running your octoprint instace")
-        port_number = serializers.IntegerField(default=5000, required=False, help_text="The port it's running at")
-        is_printing = serializers.BooleanField(default=False, required=False)
-
-    def get_serializer(self, *args, **kwargs):
-        return self.InputSerializer()
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        create_printer(**serializer.validated_data)
-        return Response()
-
-
-class PrinterDeleteAPi(DestroyAPIView):
-
-    def destroy(self, request, *args, **kwargs):
-        delete_printer(kwargs["printer_id"])
-        return Response({"status":"deleted successfully"}, status=status.HTTP_200_OK)
-
-
-class PrinterUpdateAPi(UpdateAPIView):
-    class InputSerializer(serializers.Serializer):
-        # Possible DRY volition
-        name = serializers.CharField(help_text="The name of your printer")
-        build_volume = serializers.CharField(help_text="The usable build volume of you printer, provided as XxYxZ, "
-                                                       "for example 300x300x300")
-        printer_type = serializers.ChoiceField(["CR", "DL"], help_text="Type of your printer, CR - Cartesian, "
-                                                                       "DL - Delta")
-        username = serializers.CharField(help_text="Login to the octoprint instance")
-        password = serializers.CharField(style={'input_type': 'password'}, help_text="Your password to the octoprint account"
-                                                                                     "don't worry, it's stored securely")
-        thumbnail = serializers.ImageField(required=False, style={'input_type': 'file'}, help_text="The thumbnail you "
-                                                                                                   "want this printer"
-                                                                                                   "to be identified with")
-        ip_address = serializers.IPAddressField(default="0.0.0.0", required=False, help_text="IP address of the raspberry pi"
-                                                                                             "running your octoprint instace")
-        port_number = serializers.IntegerField(default=5000, required=False, help_text="The port it's running at")
-        is_printing = serializers.BooleanField(default=False, required=False)
-
-    def get_serializer(self, *args, **kwargs):
-        return self.InputSerializer()
-
-    def patch(self, request, *args, **kwargs):
-        return Response()
-
-    def update(self, request, *args, **kwargs):
-        return Response()
+        return Response(data={"printer_id":kwargs["printer_id"], "command":kwargs["command"]},
+                        status=status.HTTP_200_OK)
 
 
 class QueuesListApi(ListAPIView):
@@ -186,7 +110,7 @@ class AddModelsToQueueApi(APIView):
     def get_serializer(self):
         return self.InputSerializer()
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request, **kwargs):
         serializer = self.InputSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -211,7 +135,7 @@ class RemoveModelsFromQueueApi(APIView):
     def get_serializer(self):
         return self.InputSerializer()
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request, **kwargs):
         serializer = self.InputSerializer(data=request.data)
         if serializer.is_valid():
             queue = get_queue(kwargs['printer_id'])

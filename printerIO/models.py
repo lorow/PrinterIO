@@ -18,8 +18,7 @@ class Printer(models.Model):
     ip_address = models.GenericIPAddressField(default="0.0.0.0")
     port_number = models.IntegerField(default=5000)
     is_printing = models.BooleanField(default=False)
-    username = models.CharField(max_length=150, blank=True)
-    password = models.CharField(max_length=150, blank=True)
+    X_Api_Key = models.TextField(default="")
 
     def __str__(self):
         return '{name} of type {type}'.format(name=self.name,

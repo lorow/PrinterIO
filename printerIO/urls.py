@@ -26,11 +26,7 @@ urlpatterns = [
     path('', include_docs_urls(title="PrinterIO API guide")),
     path('api/', include(router.urls)),
 
-    path('api/printers/', PrinterListApi.as_view()),
-    path('api/printers/<int:printer_id>/', PrinterDetailAPi.as_view()),
-    path('api/printers/create/', PrinterCreateAPi.as_view()),
-    path('api/printers/<int:printer_id>/delete/', PrinterDeleteAPi.as_view()),
-    path('api/printers/<int:printer_id>/update/', PrinterUpdateAPi.as_view()),
+    path('api/printers/<int:printer_id>/command/<str:command>/', PrinterGCODEAPI.as_view()),
 
     path('api/printers/<int:printer_id>/queue/', QueuesListApi.as_view()),
     path('api/printers/<int:printer_id>/create_queue/', QueueCreateApi.as_view()),

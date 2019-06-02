@@ -9,4 +9,5 @@ class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
 
 router = NestedDefaultRouter()
 router.register('models', views.PrintingModelViewSet)
+router.register('printers', views.PrinterViewSet)
 router.register('results', views.QualityViewSet)
