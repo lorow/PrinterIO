@@ -1,25 +1,44 @@
 from printerIO.models import Queue, Printer
-from printerIO.utils import flatten_list
+from printerIO.utils import flatten_list, issue_command_to_printer
 from printerIO.selectors import get_printer
 from collections import OrderedDict
-import requests
 
 
-def execute_gcode_command(printer_id:int, command:str) -> None:
+def execute_gcode_commands(printer_id: int, commands: str) -> None:
     printer = get_printer(printer_id)
-    command = command
     command_endpoint = "/api/printer/command"
 
+    if printer.X_Api_Key == "":
+        raise ValueError
 
-    req = requests.post("http://{ip}:{port}{endpoint}".format(
-        ip=printer.ip_address,
-        port=printer.port_number,
-        endpoint=command_endpoint
-    ),
-                        headers={"X-Api-Key":printer.X_Api_Key,
-                                 "Content-Type":"application/json"},
-                        json={"command":command},)
-    
+    issue_command_to_printer(printer_ip=printer.ip_address,
+                             printer_port=printer.port_number,
+                             endpoint=command_endpoint,
+                             api_key=printer.X_Api_Key,
+                             json={"commands": commands.split(',')})
+
+
+def move_axis_printer(printer_id: int, axis, amount) -> None:
+    printer = get_printer(printer_id)
+    command_endpoint = "/api/printer/printhead"
+
+    demanded_directions = axis.split(',')
+    provided_amounts = [int(value) for value in amount.split(",")]
+
+    if not len(demanded_directions) == len(provided_amounts):
+        raise ValueError # TODO
+
+    json = dict(zip(demanded_directions, provided_amounts))
+    json["command"] = "jog"
+
+    req=issue_command_to_printer(printer_ip=printer.ip_address,
+                             printer_port=printer.port_number,
+                             endpoint=command_endpoint,
+                             api_key=printer.X_Api_Key,
+                             json=json)
+
+    print(req)
+
 
 def create_queue(printer: int, printing_models: OrderedDict) -> Queue:
     printer_object = Printer.objects.get(id=printer)

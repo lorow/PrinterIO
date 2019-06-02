@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
 from printerIO.serializers import *
 from printerIO.models import *
@@ -23,16 +23,30 @@ class PrinterViewSet(viewsets.ModelViewSet):
     serializer_class = PrinterSerializer
 
 
-class PrinterGCODEAPI(APIView):
+class PrinterGCODECommandsAPI(APIView):
 
     def get(self, request, **kwargs):
-        if not "printer_id" in kwargs or not "command" in kwargs:
-            return Response(data={"status":"The printer id or command is missing"}, status=status.HTTP_400_BAD_REQUEST)
+        if not "commands" in kwargs:
+            return Response(data={"status": "The command is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        execute_gcode_command(printer_id=kwargs["printer_id"], command=kwargs["command"])
+        execute_gcode_commands(**kwargs)
 
-        return Response(data={"printer_id":kwargs["printer_id"], "command":kwargs["command"]},
+        return Response(data={"printer_id": kwargs["printer_id"], "commands": kwargs["commands"]},
                         status=status.HTTP_200_OK)
+
+
+class PrinterMoveAxisAPI(APIView):
+    """Endpoint for moving around tools of the printer, you can provide only one axis with one value
+    or multiple as [x,z], [10,20]"""
+
+    def get(self, request, **kwargs):
+
+        if not "axis" in kwargs or not "amount" in kwargs:
+            return Response(data={"status":"You must provide both, the direction and amount"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        move_axis_printer(**kwargs)
+        return Response(data={**kwargs}, status=status.HTTP_200_OK)
 
 
 class QueuesListApi(ListAPIView):

@@ -1,4 +1,5 @@
 from itertools import chain
+import requests
 
 
 def flatten_list(list_to_flatten):
@@ -22,3 +23,19 @@ def validate_build_volume(build_volume):
         return False
 
     return True
+
+
+def issue_command_to_printer(printer_ip, printer_port, endpoint, api_key, json):
+
+    return requests.post(
+        url="http://{ip}:{port}{endpoint}".format(
+            ip=printer_ip,
+            port=printer_port,
+            endpoint=endpoint
+        ),
+        headers={
+            "X-Api-Key": api_key,
+            "Content-Type": "application/json"
+        },
+        json=json
+    )
