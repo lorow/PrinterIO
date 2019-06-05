@@ -18,6 +18,7 @@ class Printer(models.Model):
     ip_address = models.GenericIPAddressField(default="0.0.0.0")
     port_number = models.IntegerField(default=5000)
     is_printing = models.BooleanField(default=False)
+    is_paused = models.BooleanField(default=False)
     X_Api_Key = models.TextField(default="")
 
     def __str__(self):

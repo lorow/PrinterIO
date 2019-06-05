@@ -26,13 +26,17 @@ class PrinterViewSet(viewsets.ModelViewSet):
 class PrinterGCODECommandsAPI(APIView):
 
     def get(self, request, **kwargs):
-        if not "commands" in kwargs:
+        if "commands" not in kwargs:
             return Response(data={"status": "The command is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        execute_gcode_commands(**kwargs)
+        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
+            execute_gcode_commands(**kwargs)
 
-        return Response(data={"printer_id": kwargs["printer_id"], "commands": kwargs["commands"]},
-                        status=status.HTTP_200_OK)
+            return Response(data={"printer_id": kwargs["printer_id"], "commands": kwargs["commands"]},
+                            status=status.HTTP_200_OK)
+
+        return Response(data={"status": "The selected printer is not connected right not, check the connection"},
+                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 class PrinterMoveAxisAPI(APIView):
@@ -41,15 +45,61 @@ class PrinterMoveAxisAPI(APIView):
 
     def get(self, request, **kwargs):
 
-        if not "axis" in kwargs or not "amount" in kwargs:
-            return Response(data={"status":"You must provide both, the direction and amount"},
+        if "axis" not in kwargs or "amount" not in kwargs:
+            return Response(data={"status": "You must provide both, the direction and amount"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        move_axis_printer(**kwargs)
-        return Response(data={**kwargs}, status=status.HTTP_200_OK)
+        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
+            move_axis_printer(**kwargs)
+            return Response(data={**kwargs}, status=status.HTTP_200_OK)
+
+        return Response(data={"status": "The selected printer is not connected, check the connection"},
+                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class PrinterJobStartApi(APIView):
+    """API endpoint for implicitly creating a one-file long queue, and therefore starting the print job NOTE: The print
+    job won't start unless the printer is set as "ready to print" NOTE 2: If there is an existing queue, the file will
+    be added to it
+    """
+    def post(self, request, **kwargs):
+
+        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
+            start_print_job(**kwargs)
+            return Response(data={"status":"The job has been started successfully"},
+                            status=status.HTTP_200_OK)
+
+        return Response(data={"status": "The printer is not connected, check your connection"},
+                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class PrinterJobPauseApi(APIView):
+    """API endpoint for pausing the printing job. It can also be used to un-pause the job since it keeps the
+    state
+    """
+    def get(self, request, **kwargs):
+        return Response()
+
+
+class PrinterJobCancelApi(APIView):
+    """
+    API endpoint for canceling the printing job.
+    """
+    def get(self, request, **kwargs):
+        return Response()
+
+
+class PrinterStartNextJobApi(APIView):
+    """
+    API endpoint for letting the PrinterIO system know that it can safely issue next print job
+    """
+
+    def get(self, request, **kwargs):
+        return Response()
 
 
 class QueuesListApi(ListAPIView):
+    """API endpoint for listing all the currently running printing queues"""
     queryset = Queue.objects.all()
 
     class QueueSerializer(serializers.ModelSerializer):
@@ -66,7 +116,7 @@ class QueuesListApi(ListAPIView):
         return self.QueueSerializer()
 
     def get(self, request, *args, **kwargs):
-        queues = get_queues({'parent_lookup_printer': kwargs['printer_id']})
+        queues = get_queues(kwargs['printer_id'])
         data = self.QueueSerializer(queues, many=True)
         return Response(data.data, status=status.HTTP_200_OK)
 
@@ -100,7 +150,7 @@ class QueueCreateApi(CreateAPIView):
 class QueueDeleteApi(DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
-        queue = get_queue(kwargs['printer_id'])
+        queue = get_queue_by_queueID(kwargs['printer_id'])
         try:
             delete_queue(queue)
             return Response(data={"status": "The queue has been successfully deleted"},
@@ -128,7 +178,7 @@ class AddModelsToQueueApi(APIView):
         serializer = self.InputSerializer(data=request.data)
 
         if serializer.is_valid():
-            queue = get_queue(kwargs['printer_id'])
+            queue = get_queue_by_queueID(kwargs['printer_id'])
             add_models_to_queue(queue, serializer.validated_data)
             return Response(data={"status": "The models have been added successfully"}, status=status.HTTP_200_OK)
 
@@ -152,7 +202,7 @@ class RemoveModelsFromQueueApi(APIView):
     def patch(self, request, **kwargs):
         serializer = self.InputSerializer(data=request.data)
         if serializer.is_valid():
-            queue = get_queue(kwargs['printer_id'])
+            queue = get_queue_by_queueID(kwargs['printer_id'])
             remove_models_from_queue(queue, serializer.validated_data)
             return Response(data={"status": "Models have been deleted successfully"})
 

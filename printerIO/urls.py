@@ -30,10 +30,15 @@ urlpatterns = [
     path('api/printers/<int:printer_id>/move/<str:axis>/<str:amount>/', PrinterMoveAxisAPI.as_view()),
 
     path('api/printers/<int:printer_id>/queue/', QueuesListApi.as_view()),
-    path('api/printers/<int:printer_id>/create_queue/', QueueCreateApi.as_view()),
-    path('api/printers/<int:printer_id>/remove_queue/', QueueDeleteApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/add_models/', AddModelsToQueueApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/remove_models/', RemoveModelsFromQueueApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/create/', QueueCreateApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/delete/', QueueDeleteApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/add/', AddModelsToQueueApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/remove/', RemoveModelsFromQueueApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/next/', PrinterStartNextJobApi.as_view()),
+
+    path('api/printers/<int:printer_id>/job/<int:file_id>/start/', PrinterJobStartApi.as_view()),
+    path('api/printers/<int:printer_id>/job/<int:file_id>/pause/', PrinterJobPauseApi.as_view()),
+    path('api/printers/<int:printer_id>/job/<int:file_id>/cancel/', PrinterJobCancelApi.as_view()),
 
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls',  namespace='rest_framework'))
