@@ -1,5 +1,5 @@
-from typing import Iterable
 from printerIO.models import Queue, Printer, PrintingModel
+from typing import Iterable
 
 
 def get_models() -> Iterable[PrintingModel]:

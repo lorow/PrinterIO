@@ -25,7 +25,7 @@ def validate_build_volume(build_volume):
     return True
 
 
-def issue_command_to_printer(printer_ip, printer_port, endpoint, api_key, json):
+def issue_command_to_printer(printer_ip, printer_port, endpoint, api_key, json, custom_headers=None):
 
     return requests.post(
         url="http://{ip}:{port}{endpoint}".format(
@@ -33,7 +33,7 @@ def issue_command_to_printer(printer_ip, printer_port, endpoint, api_key, json):
             port=printer_port,
             endpoint=endpoint
         ),
-        headers={
+        headers= custom_headers or {
             "X-Api-Key": api_key,
             "Content-Type": "application/json"
         },

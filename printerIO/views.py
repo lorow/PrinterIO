@@ -1,11 +1,11 @@
-from rest_framework import viewsets, status
-from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
+from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from printerIO.serializers import *
-from printerIO.models import *
 from printerIO.selectors import *
 from printerIO.services import *
+from printerIO.models import *
 
 
 class PrintingModelViewSet(viewsets.ModelViewSet):
@@ -63,10 +63,15 @@ class PrinterJobStartApi(APIView):
     be added to it
     """
     def post(self, request, **kwargs):
-
-        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
-            start_print_job(**kwargs)
-            return Response(data={"status":"The job has been started successfully"},
+        # check_if_printer_is_connected(get_printer(kwargs["printer_id"]))
+        if True:
+            printer_data = start_print_job(**kwargs)
+            return Response(data={"status":"The job has been started successfully",
+                                  "socket_connection_info":{
+                                      "ip":printer_data.ip_address,
+                                      "port":printer_data.port_number,
+                                      "endpoint":"/chuj/to/wie"
+                                  }},
                             status=status.HTTP_200_OK)
 
         return Response(data={"status": "The printer is not connected, check your connection"},
@@ -95,6 +100,7 @@ class PrinterStartNextJobApi(APIView):
     """
 
     def get(self, request, **kwargs):
+        call_next_job(**kwargs)
         return Response()
 
 
@@ -150,8 +156,8 @@ class QueueCreateApi(CreateAPIView):
 class QueueDeleteApi(DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
-        queue = get_queue_by_queueID(kwargs['printer_id'])
         try:
+            queue = get_queue_by_queueID(kwargs['printer_id'])
             delete_queue(queue)
             return Response(data={"status": "The queue has been successfully deleted"},
                             status=status.HTTP_200_OK)

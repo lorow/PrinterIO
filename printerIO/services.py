@@ -1,13 +1,14 @@
-from printerIO.models import Queue, Printer
-from printerIO.utils import flatten_list, issue_command_to_printer
 from printerIO.selectors import get_printer, get_queue_by_printer, get_model
+from printerIO.utils import flatten_list, issue_command_to_printer
 from django.core.exceptions import ObjectDoesNotExist
-from collections import OrderedDict
 from requests.exceptions import ConnectionError
+from printerIO.models import Queue, Printer
+from printerIO.apps import PrinterIOConfig
+from collections import OrderedDict
 import requests
 
 
-def start_print_job(printer_id: int, file_id: int):
+def start_print_job(printer_id: int, file_id: int) -> Printer:
     """Service for implicitly creating a one-file-long queue and letting the octoprint start the job"""
 
     models = OrderedDict()
@@ -15,10 +16,17 @@ def start_print_job(printer_id: int, file_id: int):
 
     try:
         queue = get_queue_by_printer(printer_id=printer_id)
-        add_models_to_queue(queue, models)
+        new_queue = add_models_to_queue(queue, models)
+
+        PrinterIOConfig.printing_manager.refresh_queue(new_queue, queue.printer)
 
     except ObjectDoesNotExist:
-        create_queue(printer_id, models)
+        queue = create_queue(printer_id, models)
+
+        PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
+
+    printer_to_return = queue.printer
+    return printer_to_return
 
 
 def cancel_print_job():
@@ -27,6 +35,10 @@ def cancel_print_job():
 
 def pause_print_job():
     pass
+
+
+def call_next_job(printer_id: int) -> None:
+    PrinterIOConfig.printing_manager.print(get_printer(printer_id))
 
 
 def execute_gcode_commands(printer_id: int, commands: str) -> None:
