@@ -20,11 +20,11 @@ class PrintingManager:
         """When called, pops model from the list of models identified by printer and sends it to the octoprint
         instance
         """
+        # TODO make it so that it updates the printer i.e sets that it's printing
 
         if printer in self.current_queues:
-            # if the list is empty, simply delete it and clean up the queue in the database
             if len(self.current_queues[printer]):
-                # if it's not, get the next model, update the queue in the database and issue print command
+                # if the queue isn't empty, simply proceed with printing
                 model = self.current_queues[printer].pop()
 
                 models_to_delete = OrderedDict()
@@ -33,43 +33,36 @@ class PrintingManager:
 
                 self.issue_printing_command(printer, model)
 
-            else:
+            # so we issued the printing command and pop the model, let's check if it was the last one
+            # and if so, delete it
+            if not len(self.current_queues[printer]):
                 del self.current_queues[printer]
                 self.clean_queue(printer)
-
-    def cancel(self, printer):
-        pass
-
-    def pause(self, printer):
-        pass
 
     @staticmethod
     def remove_model_from_queue(printer, model_to_remove):
         """removes the model from the queue"""
 
         from printerIO.services import remove_models_from_queue
-        from printerIO.selectors import get_queue_by_printer
+        from printerIO.selectors import get_queue_by_printer_id
 
-        queue = get_queue_by_printer(printer.id)
+        queue = get_queue_by_printer_id(printer.id)
         remove_models_from_queue(queue, model_to_remove)
 
     @staticmethod
     def clean_queue(printer):
         """deletes the queue"""
 
-        from printerIO.selectors import get_queue_by_printer
+        from printerIO.selectors import get_queue_by_printer_id
         from printerIO.services import delete_queue
 
-        queue = get_queue_by_printer(printer.id)
+        queue = get_queue_by_printer_id(printer.id)
         delete_queue(queue)
 
     @staticmethod
     def issue_printing_command(printer, model):
         """Sends actual requests to the octoprint instance"""
         from printerIO.utils import issue_command_to_printer
-        # upload a file
-        # select it
-        # start a print job
         # TODO make it so user chooses where to send the files -> PrintingModel
         file_endpoint = "/api/files/local"
 

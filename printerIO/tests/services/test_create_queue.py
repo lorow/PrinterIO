@@ -1,6 +1,6 @@
 from django.test import TestCase
 from printerIO.models import Printer, PrintingModel
-from printerIO.selectors import get_queue_by_queueID
+from printerIO.selectors import get_queue_by_queue_id
 from printerIO.services import create_queue
 from django.core.files import File
 from collections import OrderedDict
@@ -34,4 +34,4 @@ class CreateQueueTest(TestCase):
     def test_whether_the_queue_is_being_created(self):
         """test whether or not the created queue is the same as the one in the database"""
         queue = self.service(self.printer.id, self.printing_models)
-        self.assertEquals(queue, get_queue_by_queueID(1), "test")
+        self.assertEquals(queue, get_queue_by_queue_id(1), "test")

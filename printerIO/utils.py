@@ -9,11 +9,11 @@ def flatten_list(list_to_flatten):
 def validate_build_volume(build_volume):
 
     if not build_volume:
-        return False
+        raise ValueError("No build volume has been provided")
 
     axis = build_volume.split('x')
 
-    if len(axis) > 3 or len(axis) < 3:
+    if len(axis) != 3:
         return False
 
     try:
@@ -33,7 +33,7 @@ def issue_command_to_printer(printer_ip, printer_port, endpoint, api_key, json, 
             port=printer_port,
             endpoint=endpoint
         ),
-        headers= custom_headers or {
+        headers=custom_headers or {
             "X-Api-Key": api_key,
             "Content-Type": "application/json"
         },
