@@ -22,32 +22,45 @@ class PrintingManager:
         """
         # TODO make it so that it updates the printer i.e sets that it's printing
 
+        if self.__check_local_queue(printer):
+            # if the queue isn't empty, simply proceed with printing
+            model = self.current_queues[printer].pop()
+            self.remove_model_from_queue(printer, model)
+            self.issue_printing_command(printer, model)
+
+            printer.is_printing = True
+            printer.save()
+
+    def __check_local_queue(self, printer):
         if printer in self.current_queues:
             if len(self.current_queues[printer]):
-                # if the queue isn't empty, simply proceed with printing
-                model = self.current_queues[printer].pop()
+                return True
 
-                models_to_delete = OrderedDict()
-                models_to_delete["printing_models"] = [model]
-                self.remove_model_from_queue(printer, models_to_delete)
+        return False
 
-                self.issue_printing_command(printer, model)
+    def next_job(self, printer):
+        """Check the state of the queue, and calls the next printing job if possible"""
 
-            # so we issued the printing command and pop the model, let's check if it was the last one
-            # and if so, delete it
+        if printer in self.current_queues:
             if not len(self.current_queues[printer]):
                 del self.current_queues[printer]
                 self.clean_queue(printer)
 
+            else:
+                self.print(printer)
+
     @staticmethod
-    def remove_model_from_queue(printer, model_to_remove):
+    def remove_model_from_queue(printer, model):
         """removes the model from the queue"""
 
         from printerIO.services import remove_models_from_queue
         from printerIO.selectors import get_queue_by_printer_id
 
+        models_to_delete = OrderedDict()
+        models_to_delete["printing_models"] = [model]
+
         queue = get_queue_by_printer_id(printer.id)
-        remove_models_from_queue(queue, model_to_remove)
+        remove_models_from_queue(queue, models_to_delete)
 
     @staticmethod
     def clean_queue(printer):

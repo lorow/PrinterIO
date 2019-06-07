@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -83,8 +83,11 @@ class PrinterJobPauseApi(APIView):
     state
     """
     def get(self, request, **kwargs):
-        pause_print_job(**kwargs)
-        return Response(data={"status": "The job has been successfully paused"}, status=status.HTTP_200_OK)
+        try:
+            pause_print_job(**kwargs)
+            return Response(data={"status": "The job has been successfully paused"}, status=status.HTTP_200_OK)
+        except ValidationError as val:
+            return Response(data={"status": val.message}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PrinterJobCancelApi(APIView):
@@ -92,8 +95,11 @@ class PrinterJobCancelApi(APIView):
     API endpoint for canceling the printing job.
     """
     def get(self, request, **kwargs):
-        cancel_print_job(**kwargs)
-        return Response(data={"status": ""}, status=status.HTTP_200_OK)
+        try:
+            cancel_print_job(**kwargs)
+            return Response(data={"status": ""}, status=status.HTTP_200_OK)
+        except ValidationError as val:
+            return Response(data={"status": val.message}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PrinterStartNextJobApi(APIView):
@@ -106,7 +112,7 @@ class PrinterStartNextJobApi(APIView):
         return Response()
 
 
-class QueuesListApi(ListAPIView):
+class QueuesListApi(RetrieveAPIView):
     """API endpoint for listing all the currently running printing queues"""
     queryset = Queue.objects.all()
 
@@ -124,9 +130,12 @@ class QueuesListApi(ListAPIView):
         return self.QueueSerializer()
 
     def get(self, request, *args, **kwargs):
-        queues = get_queue_by_queue_id(kwargs['printer_id'])
-        data = self.QueueSerializer(queues, many=True)
-        return Response(data.data, status=status.HTTP_200_OK)
+        try:
+            queues = get_queue_by_queue_id(kwargs['printer_id'])
+            data = self.QueueSerializer(queues, many=False)
+            return Response(data.data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({"status":"Queue with this ID does not exists"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class QueueCreateApi(CreateAPIView):
@@ -141,6 +150,10 @@ class QueueCreateApi(CreateAPIView):
         return self.InputSerializer()
 
     def post(self, request, *args, **kwargs):
+
+        # DOES NOT START PRINTING
+        # QUEUE DOES NOT COMMUNICATE WITH PRINTING MANAGER
+
         serializer = self.InputSerializer(data=request.data)
         if serializer.is_valid():
             try:

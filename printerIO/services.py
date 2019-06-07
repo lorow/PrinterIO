@@ -78,8 +78,9 @@ def pause_print_job(printer_id: int) -> None:
 
 
 def call_next_job(printer_id: int) -> None:
-    """An utility service, creating for letting printing manager know that it should issue next job more easily"""
-    PrinterIOConfig.printing_manager.print(get_printer(printer_id))
+    """An utility service, creating for letting printing manager know that it should issue next job more easily
+    This should always be called, even if there is no more work to do, it will close everything automatically"""
+    PrinterIOConfig.printing_manager.next_job(get_printer(printer_id))
 
 
 def execute_gcode_commands(printer_id: int, commands: str) -> None:

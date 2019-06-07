@@ -37,8 +37,8 @@ urlpatterns = [
     path('api/printers/<int:printer_id>/queue/next/', PrinterStartNextJobApi.as_view()),
 
     path('api/printers/<int:printer_id>/job/<int:file_id>/start/', PrinterJobStartApi.as_view()),
-    path('api/printers/<int:printer_id>/job/<int:file_id>/pause/', PrinterJobPauseApi.as_view()),
-    path('api/printers/<int:printer_id>/job/<int:file_id>/cancel/', PrinterJobCancelApi.as_view()),
+    path('api/printers/<int:printer_id>/job/pause/', PrinterJobPauseApi.as_view()),
+    path('api/printers/<int:printer_id>/job/cancel/', PrinterJobCancelApi.as_view()),
 
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls',  namespace='rest_framework'))
