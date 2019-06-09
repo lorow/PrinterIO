@@ -19,6 +19,8 @@ class Printer(models.Model):
     port_number = models.IntegerField(default=5000)
     is_printing = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)
+    number_of_extruders = models.IntegerField(default=1)
+    has_heated_chamber = models.BooleanField(default=False)
     X_Api_Key = models.TextField(default="")
 
     def __str__(self):
@@ -60,3 +62,5 @@ class PrintedModelQuality(models.Model):
     quality_number = models.IntegerField(
         validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
+
+    was_cancelled = models.BooleanField(default=False)

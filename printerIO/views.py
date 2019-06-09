@@ -112,6 +112,77 @@ class PrinterStartNextJobApi(APIView):
         return Response()
 
 
+class PrinterSetBedTemperatureApi(APIView):
+
+    class InputSerializer(serializers.Serializer):
+        temperature = serializers.IntegerField()
+
+    def get_serializer(self, *args, **kwargs):
+        return self.InputSerializer()
+
+    def post(self, request, *args, **kwargs):
+        data = self.InputSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+
+        if check_if_printer_is_connected(get_printer(**kwargs)):
+            try:
+                set_printer_bed_temperature(
+                    printer_id=kwargs["printer_id"],
+                    temperature=data.validated_data["temperature"]
+                )
+
+                return Response(data={"status": "The temperature for the {tool} has been successfully set to {temp}"
+                                .format(tool=data.validated_data["tool_type"],
+                                        temp=data.validated_data["temperature"])},
+
+                                status=status.HTTP_200_OK)
+
+            except ValidationError as v:
+                return Response(data={"status": v.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data={"status": "The printer is not connected, check you connection"},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
+class PrinterSetToolTemperature(APIView):
+
+    class InputSerializer(serializers.Serializer):
+        temperatures = serializers.ListField(child=serializers.IntegerField())
+
+    def get_serializer(self):
+        return self.InputSerializer()
+
+    def post(self, request, **kwargs):
+
+        data = self.InputSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        set_printer_tool_temperature(kwargs["printer_id"], data.validated_data["temperatures"])
+
+        return Response(data={"status": "The temperatures for the tools have been set successfully"}
+                        , status=status.HTTP_200_OK)
+
+
+class PrinterSetChamberTemperature(APIView):
+
+    class InputSerializer(serializers.Serializer):
+        temperature = serializers.IntegerField()
+
+    def get_serializer(self):
+        return self.InputSerializer()
+
+    def post(self, request, **kwargs):
+        data = self.InputSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        try:
+            set_printer_chamber_temperature(kwargs["printer_id"], data.validated_data["temperature"])
+
+            return Response(data={"status": "The temperature for the chamber has been set successfully"},
+                            status=status.HTTP_200_OK)
+        except ValidationError as v:
+            return Response(data={"status": v.message},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
 class QueuesListApi(RetrieveAPIView):
     """API endpoint for listing all the currently running printing queues"""
     queryset = Queue.objects.all()

@@ -109,14 +109,95 @@ def move_axis_printer(printer_id: int, axis, amount) -> None:
     if not len(demanded_directions) == len(provided_amounts):
         raise ValueError("You must provide an equal amount of values for given amount of directions")
 
-    json = dict(zip(demanded_directions, provided_amounts))
-    json["command"] = "jog"
+    payload = dict(zip(demanded_directions, provided_amounts))
+    payload["command"] = "jog"
 
     issue_command_to_printer(printer_ip=printer.ip_address,
                              printer_port=printer.port_number,
                              endpoint=command_endpoint,
                              api_key=printer.X_Api_Key,
-                             json=json)
+                             json=payload)
+
+
+def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
+
+    if temperature < 0:
+        raise ValidationError("The temperature cannot be lower than 0")
+
+    printer = get_printer(printer_id)
+    temperature_endpoint = "/api/printer/bed"
+    payload = {
+        "command": "target",
+        "target": temperature
+    }
+
+    req = issue_command_to_printer(
+        printer_ip=printer.ip_address,
+        printer_port=printer.port_number,
+        endpoint=temperature_endpoint,
+        api_key=printer.X_Api_Key,
+        json=payload
+    )
+
+    if req.status_code == 409:
+        raise ValidationError("The printer is not operational")
+
+    return printer
+
+
+def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer:
+
+    printer = get_printer(printer_id)
+
+    if len(temperatures) > printer.number_of_extruders:
+        raise ValidationError("Too many temperature values provided, this printer only supports {ext} extrudes"
+                              .format(ext=printer.number_of_extruders))
+
+    tool_temperature_endpoint = "/api/printer/tool"
+
+    payload = dict()
+    payload["command"] = "target"
+    payload["targets"] = {}
+
+    for temperature_id in range(len(temperatures)):
+        payload["targets"]["tool{tool_id}".format(tool_id=temperature_id)] = temperatures[temperature_id]
+
+    issue_command_to_printer(
+        printer_ip=printer.ip_address,
+        printer_port=printer.port_number,
+        endpoint=tool_temperature_endpoint,
+        api_key=printer.X_Api_Key,
+        json=payload
+    )
+
+    return printer
+
+
+def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printer:
+    printer = get_printer(printer_id)
+
+    if temperature < 0:
+        raise  ValidationError("The temperature cannot be lower than 0")
+
+    if not printer.has_heated_chamber:
+        raise ValidationError("The printer has no heated chamber")
+
+    chamber_temperature_endpoint = "/api/printer/chamber"
+
+    payload = {
+        "command": "target",
+        "target": temperature
+    }
+
+    issue_command_to_printer(
+        printer_ip=printer.ip_address,
+        printer_port=printer.port_number,
+        endpoint=chamber_temperature_endpoint,
+        api_key=printer.X_Api_Key,
+        json=payload
+    )
+
+    return printer
 
 
 def create_queue(printer: int, printing_models: OrderedDict) -> Queue:

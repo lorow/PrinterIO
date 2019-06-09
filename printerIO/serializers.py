@@ -13,7 +13,8 @@ class PrinterSerializer(serializers.ModelSerializer):
         model = Printer
         fields = ('id', 'name', 'thumbnail', 'build_volume',
                   'printer_type', 'ip_address', 'port_number',
-                  'is_printing', 'X_Api_Key')
+                  'is_printing','is_paused', 'number_of_extruders',
+                  'has_heated_chamber', 'X_Api_Key')
 
 
 class PrintingQualitySerializer(serializers.ModelSerializer):

@@ -40,6 +40,10 @@ urlpatterns = [
     path('api/printers/<int:printer_id>/job/pause/', PrinterJobPauseApi.as_view()),
     path('api/printers/<int:printer_id>/job/cancel/', PrinterJobCancelApi.as_view()),
 
+    path('api/printers/<int:printer_id>/temperature/bed/', PrinterSetBedTemperatureApi.as_view()),
+    path('api/printers/<int:printer_id>/temperature/tool/', PrinterSetToolTemperature.as_view()),
+    path('api/printers/<int:printer_id>/temperature/chamber/', PrinterSetChamberTemperature.as_view()),
+
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls',  namespace='rest_framework'))
 ]
