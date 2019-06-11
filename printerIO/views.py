@@ -29,14 +29,13 @@ class PrinterGCODECommandsAPI(APIView):
         if "commands" not in kwargs:
             return Response(data={"status": "The command is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
+        try:
             execute_gcode_commands(**kwargs)
 
             return Response(data={"printer_id": kwargs["printer_id"], "commands": kwargs["commands"]},
                             status=status.HTTP_200_OK)
-
-        return Response(data={"status": "The selected printer is not connected right not, check the connection"},
-                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except ValidationError as v:
+            return Response(data={"status": v.message}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PrinterMoveAxisAPI(APIView):
@@ -49,11 +48,12 @@ class PrinterMoveAxisAPI(APIView):
             return Response(data={"status": "You must provide both, the direction and amount"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
+        try:
             move_axis_printer(**kwargs)
             return Response(data={**kwargs}, status=status.HTTP_200_OK)
 
-        return Response(data={"status": "The selected printer is not connected, check the connection"},
+        except ValidationError as v:
+            return Response(data={"status": v.message},
                         status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
@@ -64,7 +64,7 @@ class PrinterJobStartApi(APIView):
     """
     def post(self, request, **kwargs):
 
-        if check_if_printer_is_connected(get_printer(kwargs["printer_id"])):
+        try:
             printer_data = start_print_job(**kwargs)
             return Response(data={"status": "The job has been started successfully",
                                   "socket_connection_info": {
@@ -73,8 +73,9 @@ class PrinterJobStartApi(APIView):
                                       "endpoint": "/chuj/to/wie"
                                   }},
                             status=status.HTTP_200_OK)
+        except ValidationError as v:
 
-        return Response(data={"status": "The printer is not connected, check your connection"},
+            return Response(data={"status": v.message},
                         status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
@@ -124,24 +125,20 @@ class PrinterSetBedTemperatureApi(APIView):
         data = self.InputSerializer(data=request.data)
         data.is_valid(raise_exception=True)
 
-        if check_if_printer_is_connected(get_printer(**kwargs)):
-            try:
-                set_printer_bed_temperature(
-                    printer_id=kwargs["printer_id"],
-                    temperature=data.validated_data["temperature"]
-                )
+        try:
+            set_printer_bed_temperature(
+                printer_id=kwargs["printer_id"],
+                temperature=data.validated_data["temperature"]
+            )
 
-                return Response(data={"status": "The temperature for the {tool} has been successfully set to {temp}"
-                                .format(tool=data.validated_data["tool_type"],
-                                        temp=data.validated_data["temperature"])},
+            return Response(data={"status": "The temperature for the {tool} has been successfully set to {temp}"
+                            .format(tool=data.validated_data["tool_type"],
+                                    temp=data.validated_data["temperature"])},
 
-                                status=status.HTTP_200_OK)
+                            status=status.HTTP_200_OK)
 
-            except ValidationError as v:
-                return Response(data={"status": v.message}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(data={"status": "The printer is not connected, check you connection"},
-                        status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as v:
+            return Response(data={"status": v.message}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PrinterSetToolTemperature(APIView):

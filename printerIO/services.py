@@ -14,6 +14,9 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     models = OrderedDict()
     models["printing_models"] = [get_model(file_id)]
 
+    if not check_if_printer_is_connected(get_printer(printer_id)):
+        raise ValidationError("The printer is not connected, check your connection")
+
     try:
         queue = get_queue_by_printer_id(printer_id=printer_id)
         new_queue = add_models_to_queue(queue, models)
@@ -86,6 +89,10 @@ def call_next_job(printer_id: int) -> None:
 def execute_gcode_commands(printer_id: int, commands: str) -> None:
     """Service for making the printer execute GCODE commands"""
     printer = get_printer(printer_id)
+
+    if not check_if_printer_is_connected(printer):
+        raise ValidationError("The printer is not connected, check connection")
+
     command_endpoint = "/api/printer/command"
 
     if printer.X_Api_Key == "":
@@ -101,6 +108,10 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
 def move_axis_printer(printer_id: int, axis, amount) -> None:
     """Service for issuing the printer to move one or more tools for given amount"""
     printer = get_printer(printer_id)
+
+    if not check_if_printer_is_connected(printer):
+        raise ValidationError("The printer is not connected, check connection")
+
     command_endpoint = "/api/printer/printhead"
 
     demanded_directions = axis.split(',')
@@ -125,6 +136,10 @@ def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
         raise ValidationError("The temperature cannot be lower than 0")
 
     printer = get_printer(printer_id)
+
+    if not check_if_printer_is_connected(printer):
+        raise ValidationError("The printer is not connected, check your connection")
+
     temperature_endpoint = "/api/printer/bed"
     payload = {
         "command": "target",
@@ -177,7 +192,7 @@ def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printe
     printer = get_printer(printer_id)
 
     if temperature < 0:
-        raise  ValidationError("The temperature cannot be lower than 0")
+        raise ValidationError("The temperature cannot be lower than 0")
 
     if not printer.has_heated_chamber:
         raise ValidationError("The printer has no heated chamber")
