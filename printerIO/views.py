@@ -1,7 +1,7 @@
 from rest_framework.generics import CreateAPIView, DestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from rest_framework import viewsets, status
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from printerIO.serializers import *
 from printerIO.selectors import *
 from printerIO.services import *
@@ -29,13 +29,10 @@ class PrinterGCODECommandsAPI(APIView):
         if "commands" not in kwargs:
             return Response(data={"status": "The command is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            execute_gcode_commands(**kwargs)
+        execute_gcode_commands(**kwargs)
 
-            return Response(data={"printer_id": kwargs["printer_id"], "commands": kwargs["commands"]},
-                            status=status.HTTP_200_OK)
-        except ValidationError as v:
-            return Response(data={"status": v.message}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={"printer_id": kwargs["printer_id"], "commands": kwargs["commands"]},
+                        status=status.HTTP_200_OK)
 
 
 class PrinterMoveAxisAPI(APIView):
@@ -43,18 +40,13 @@ class PrinterMoveAxisAPI(APIView):
     or multiple as [x,z], [10,20]"""
 
     def get(self, request, **kwargs):
+        # TODO View shouldn't be validating the request
 
         if "axis" not in kwargs or "amount" not in kwargs:
-            return Response(data={"status": "You must provide both, the direction and amount"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError("You must provide both, the direction and amount")
 
-        try:
-            move_axis_printer(**kwargs)
-            return Response(data={**kwargs}, status=status.HTTP_200_OK)
-
-        except ValidationError as v:
-            return Response(data={"status": v.message},
-                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        move_axis_printer(**kwargs)
+        return Response(data={**kwargs}, status=status.HTTP_200_OK)
 
 
 class PrinterJobStartApi(APIView):
@@ -64,19 +56,14 @@ class PrinterJobStartApi(APIView):
     """
     def post(self, request, **kwargs):
 
-        try:
-            printer_data = start_print_job(**kwargs)
-            return Response(data={"status": "The job has been started successfully",
-                                  "socket_connection_info": {
-                                      "ip": printer_data.ip_address,
-                                      "port": printer_data.port_number,
-                                      "endpoint": "/chuj/to/wie"
-                                  }},
-                            status=status.HTTP_200_OK)
-        except ValidationError as v:
-
-            return Response(data={"status": v.message},
-                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        printer_data = start_print_job(**kwargs)
+        return Response(data={"status": "The job has been started successfully",
+                              "socket_connection_info": {
+                                  "ip": printer_data.ip_address,
+                                  "port": printer_data.port_number,
+                                  "endpoint": "/chuj/to/wie"
+                              }},
+                        status=status.HTTP_200_OK)
 
 
 class PrinterJobPauseApi(APIView):
@@ -84,11 +71,8 @@ class PrinterJobPauseApi(APIView):
     state
     """
     def get(self, request, **kwargs):
-        try:
-            pause_print_job(**kwargs)
-            return Response(data={"status": "The job has been successfully paused"}, status=status.HTTP_200_OK)
-        except ValidationError as val:
-            return Response(data={"status": val.message}, status=status.HTTP_400_BAD_REQUEST)
+        pause_print_job(**kwargs)
+        return Response(data={"status": "The job has been successfully paused"}, status=status.HTTP_200_OK)
 
 
 class PrinterJobCancelApi(APIView):
@@ -96,11 +80,9 @@ class PrinterJobCancelApi(APIView):
     API endpoint for canceling the printing job.
     """
     def get(self, request, **kwargs):
-        try:
-            cancel_print_job(**kwargs)
-            return Response(data={"status": ""}, status=status.HTTP_200_OK)
-        except ValidationError as val:
-            return Response(data={"status": val.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        cancel_print_job(**kwargs)
+        return Response(data={"status": ""}, status=status.HTTP_200_OK)
 
 
 class PrinterStartNextJobApi(APIView):
@@ -118,27 +100,23 @@ class PrinterSetBedTemperatureApi(APIView):
     class InputSerializer(serializers.Serializer):
         temperature = serializers.IntegerField()
 
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer(self):
         return self.InputSerializer()
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, **kwargs):
         data = self.InputSerializer(data=request.data)
         data.is_valid(raise_exception=True)
 
-        try:
-            set_printer_bed_temperature(
-                printer_id=kwargs["printer_id"],
-                temperature=data.validated_data["temperature"]
-            )
+        set_printer_bed_temperature(
+            printer_id=kwargs["printer_id"],
+            temperature=data.validated_data["temperature"]
+        )
 
-            return Response(data={"status": "The temperature for the {tool} has been successfully set to {temp}"
-                            .format(tool=data.validated_data["tool_type"],
-                                    temp=data.validated_data["temperature"])},
+        return Response(data={"status": "The temperature for the {tool} has been successfully set to {temp}"
+                        .format(tool=data.validated_data["tool_type"],
+                                temp=data.validated_data["temperature"])},
 
-                            status=status.HTTP_200_OK)
-
-        except ValidationError as v:
-            return Response(data={"status": v.message}, status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_200_OK)
 
 
 class PrinterSetToolTemperature(APIView):
@@ -155,8 +133,8 @@ class PrinterSetToolTemperature(APIView):
         data.is_valid(raise_exception=True)
         set_printer_tool_temperature(kwargs["printer_id"], data.validated_data["temperatures"])
 
-        return Response(data={"status": "The temperatures for the tools have been set successfully"}
-                        , status=status.HTTP_200_OK)
+        return Response(data={"status": "The temperatures for the tools have been set successfully"},
+                        status=status.HTTP_200_OK)
 
 
 class PrinterSetChamberTemperature(APIView):
@@ -170,14 +148,11 @@ class PrinterSetChamberTemperature(APIView):
     def post(self, request, **kwargs):
         data = self.InputSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        try:
-            set_printer_chamber_temperature(kwargs["printer_id"], data.validated_data["temperature"])
 
-            return Response(data={"status": "The temperature for the chamber has been set successfully"},
-                            status=status.HTTP_200_OK)
-        except ValidationError as v:
-            return Response(data={"status": v.message},
-                            status=status.HTTP_400_BAD_REQUEST)
+        set_printer_chamber_temperature(kwargs["printer_id"], data.validated_data["temperature"])
+
+        return Response(data={"status": "The temperature for the chamber has been set successfully"},
+                        status=status.HTTP_200_OK)
 
 
 class QueuesListApi(RetrieveAPIView):
@@ -198,12 +173,9 @@ class QueuesListApi(RetrieveAPIView):
         return self.QueueSerializer()
 
     def get(self, request, *args, **kwargs):
-        try:
-            queues = get_queue_by_queue_id(kwargs['printer_id'])
-            data = self.QueueSerializer(queues, many=False)
-            return Response(data.data, status=status.HTTP_200_OK)
-        except ObjectDoesNotExist:
-            return Response({"status":"Queue with this ID does not exists"}, status=status.HTTP_400_BAD_REQUEST)
+        queues = get_queue_by_queue_id(kwargs['printer_id'])
+        data = self.QueueSerializer(queues, many=False)
+        return Response(data.data, status=status.HTTP_200_OK)
 
 
 class QueueCreateApi(CreateAPIView):
@@ -218,35 +190,26 @@ class QueueCreateApi(CreateAPIView):
         return self.InputSerializer()
 
     def post(self, request, *args, **kwargs):
-
+        # TODO fix these bugs
         # DOES NOT START PRINTING
         # QUEUE DOES NOT COMMUNICATE WITH PRINTING MANAGER
 
         serializer = self.InputSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                create_queue(kwargs['printer_id'], serializer.validated_data)
-                return Response(data={"status": "created successfully"},
-                                status=status.HTTP_202_ACCEPTED)
-            except Exception as e:
-                print(type(e))
-                return Response(data={"status": "printer with given ID does not exists or it already has a queue"},
-                                status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        create_queue(kwargs['printer_id'], serializer.validated_data)
+        return Response(data={"status": "created successfully"},
+                        status=status.HTTP_202_ACCEPTED)
 
 
 class QueueDeleteApi(DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
-        try:
-            queue = get_queue_by_queue_id(kwargs['printer_id'])
-            delete_queue(queue)
-            return Response(data={"status": "The queue has been successfully deleted"},
-                            status=status.HTTP_200_OK)
-        except Exception:
-            return Response(data={"status": "The queue you're trying to delete does not exist"},
-                            status=status.HTTP_400_BAD_REQUEST)
+        # TODO views shouldn't take care of fetching the objects
+
+        queue = get_queue_by_queue_id(kwargs['printer_id'])
+        delete_queue(queue)
+        return Response(data={"status": "The queue has been successfully deleted"},
+                        status=status.HTTP_200_OK)
 
 
 class AddModelsToQueueApi(APIView):
@@ -266,12 +229,12 @@ class AddModelsToQueueApi(APIView):
     def patch(self, request, **kwargs):
         serializer = self.InputSerializer(data=request.data)
 
-        if serializer.is_valid():
-            queue = get_queue_by_queue_id(kwargs['printer_id'])
-            add_models_to_queue(queue, serializer.validated_data)
-            return Response(data={"status": "The models have been added successfully"}, status=status.HTTP_200_OK)
+        # TODO views shouldn't take care of fetching the objects
 
-        return Response(data={"status": "something went wrong"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        queue = get_queue_by_queue_id(kwargs['printer_id'])
+        add_models_to_queue(queue, serializer.validated_data)
+        return Response(data={"status": "The models have been added successfully"}, status=status.HTTP_200_OK)
 
 
 class RemoveModelsFromQueueApi(APIView):
@@ -289,10 +252,11 @@ class RemoveModelsFromQueueApi(APIView):
         return self.InputSerializer()
 
     def patch(self, request, **kwargs):
-        serializer = self.InputSerializer(data=request.data)
-        if serializer.is_valid():
-            queue = get_queue_by_queue_id(kwargs['printer_id'])
-            remove_models_from_queue(queue, serializer.validated_data)
-            return Response(data={"status": "Models have been deleted successfully"})
 
-        return Response(data={"status": "Given model or printer does not exist"}, )
+        # TODO views shouldn't take care of fetching the objects
+
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        queue = get_queue_by_queue_id(kwargs['printer_id'])
+        remove_models_from_queue(queue, serializer.validated_data)
+        return Response(data={"status": "Models have been deleted successfully"})

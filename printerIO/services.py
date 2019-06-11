@@ -1,10 +1,12 @@
 from printerIO.selectors import get_printer, get_queue_by_printer_id, get_model
 from printerIO.utils import flatten_list, issue_command_to_printer
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.exceptions import ValidationError
 from requests.exceptions import ConnectionError
 from printerIO.models import Queue, Printer
 from printerIO.apps import PrinterIOConfig
 from collections import OrderedDict
+from printerIO.exceptions import *
 import requests
 
 
@@ -15,7 +17,7 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     models["printing_models"] = [get_model(file_id)]
 
     if not check_if_printer_is_connected(get_printer(printer_id)):
-        raise ValidationError("The printer is not connected, check your connection")
+        raise ServiceUnavailable("The printer is not connected, check your connection")
 
     try:
         queue = get_queue_by_printer_id(printer_id=printer_id)
@@ -91,7 +93,7 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ValidationError("The printer is not connected, check connection")
+        raise ServiceUnavailable("The printer is not connected, check connection")
 
     command_endpoint = "/api/printer/command"
 
@@ -107,10 +109,11 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
 
 def move_axis_printer(printer_id: int, axis, amount) -> None:
     """Service for issuing the printer to move one or more tools for given amount"""
+
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ValidationError("The printer is not connected, check connection")
+        raise ServiceUnavailable("The printer is not connected, check connection")
 
     command_endpoint = "/api/printer/printhead"
 
@@ -118,7 +121,7 @@ def move_axis_printer(printer_id: int, axis, amount) -> None:
     provided_amounts = [int(value) for value in amount.split(",")]
 
     if not len(demanded_directions) == len(provided_amounts):
-        raise ValueError("You must provide an equal amount of values for given amount of directions")
+        raise ValidationError("You must provide an equal amount of values for given amount of directions")
 
     payload = dict(zip(demanded_directions, provided_amounts))
     payload["command"] = "jog"
@@ -138,7 +141,7 @@ def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ValidationError("The printer is not connected, check your connection")
+        raise ServiceUnavailable("The printer is not connected, check your connection")
 
     temperature_endpoint = "/api/printer/bed"
     payload = {
