@@ -20,7 +20,6 @@ class PrintingManager:
         """When called, pops model from the list of models identified by printer and sends it to the octoprint
         instance
         """
-        # TODO make it so that it updates the printer i.e sets that it's printing
 
         if self.__check_local_queue(printer):
             # if the queue isn't empty, simply proceed with printing

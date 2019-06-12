@@ -39,12 +39,9 @@ class PrinterMoveAxisAPI(APIView):
     """Endpoint for moving around tools of the printer, you can provide only one axis with one value
     or multiple as [x,z], [10,20]"""
 
+    # TODO make it so that it utilizes an serializer
+
     def get(self, request, **kwargs):
-        # TODO View shouldn't be validating the request
-
-        if "axis" not in kwargs or "amount" not in kwargs:
-            raise ValidationError("You must provide both, the direction and amount")
-
         move_axis_printer(**kwargs)
         return Response(data={**kwargs}, status=status.HTTP_200_OK)
 
@@ -204,8 +201,6 @@ class QueueCreateApi(CreateAPIView):
 class QueueDeleteApi(DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
-        # TODO views shouldn't take care of fetching the objects
-
         queue = get_queue_by_queue_id(kwargs['printer_id'])
         delete_queue(queue)
         return Response(data={"status": "The queue has been successfully deleted"},
@@ -229,8 +224,6 @@ class AddModelsToQueueApi(APIView):
     def patch(self, request, **kwargs):
         serializer = self.InputSerializer(data=request.data)
 
-        # TODO views shouldn't take care of fetching the objects
-
         serializer.is_valid(raise_exception=True)
         queue = get_queue_by_queue_id(kwargs['printer_id'])
         add_models_to_queue(queue, serializer.validated_data)
@@ -253,10 +246,9 @@ class RemoveModelsFromQueueApi(APIView):
 
     def patch(self, request, **kwargs):
 
-        # TODO views shouldn't take care of fetching the objects
-
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         queue = get_queue_by_queue_id(kwargs['printer_id'])
         remove_models_from_queue(queue, serializer.validated_data)
         return Response(data={"status": "Models have been deleted successfully"})

@@ -107,10 +107,13 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
                              json={"commands": commands.split(',')})
 
 
-def move_axis_printer(printer_id: int, axis, amount) -> None:
+def move_axis_printer(printer_id: int = None, axis: str = None, amount=None) -> None:
     """Service for issuing the printer to move one or more tools for given amount"""
 
     printer = get_printer(printer_id)
+
+    if axis is None or amount is None:
+        raise ValidationError("You must provide both, the amount and the axis")
 
     if not check_if_printer_is_connected(printer):
         raise ServiceUnavailable("The printer is not connected, check connection")
@@ -254,6 +257,7 @@ def remove_models_from_queue(queue: Queue, models_to_remove: dict) -> Queue:
 def check_if_printer_is_connected(printer_to_check: Printer) -> bool:
     """Service for checking whether or not the printer in question if actually connected"""
     connection_endpoint = "/api/connection"
+    # The connection should read Operational
     try:
         req = requests.get(
             url="http://{ip}:{port}{endpoint}".format(
@@ -267,7 +271,7 @@ def check_if_printer_is_connected(printer_to_check: Printer) -> bool:
             }
         )
 
-        if req.json()["current"]["state"] == "Closed":
+        if not req.json()["current"]["state"] == "Operational":
             return False
 
     except ConnectionError:
