@@ -6,21 +6,28 @@ from printerIO.serializers import *
 from printerIO.selectors import *
 from printerIO.services import *
 from printerIO.models import *
+import django_filters
 
 
 class PrintingModelViewSet(viewsets.ModelViewSet):
     queryset = PrintingModel.objects.all()
     serializer_class = PrintingModelSerializer
-
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('name', 'thing_dimensions')
 
 class QualityViewSet(viewsets.ModelViewSet):
     queryset = PrintedModelQuality.objects.all()
     serializer_class = PrintingQualitySerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('printer', 'model', 'quality_number', 'was_cancelled')
 
 
 class PrinterViewSet(viewsets.ModelViewSet):
     queryset = Printer.objects.all()
     serializer_class = PrinterSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('name', 'build_volume', 'printer_type', 'is_printing',
+                        'is_paused', 'number_of_extruders', 'has_heated_chamber')
 
 
 class PrinterGCODECommandsAPI(APIView):

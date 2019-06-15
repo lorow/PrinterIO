@@ -9,6 +9,7 @@ faker = Factory.create()
 
 
 class PrinterFactory(factory.DjangoModelFactory):
+
     class Meta:
         model = Printer
 
