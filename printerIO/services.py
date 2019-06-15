@@ -97,9 +97,6 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
 
     command_endpoint = "/api/printer/command"
 
-    if printer.X_Api_Key == "":
-        raise ValueError("The X_Api_Key is missing")
-
     issue_command_to_printer(printer_ip=printer.ip_address,
                              printer_port=printer.port_number,
                              endpoint=command_endpoint,
@@ -107,12 +104,12 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
                              json={"commands": commands.split(',')})
 
 
-def move_axis_printer(printer_id: int = None, axis: str = None, amount=None) -> None:
+def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> None:
     """Service for issuing the printer to move one or more tools for given amount"""
 
     printer = get_printer(printer_id)
 
-    if axis is None or amount is None:
+    if axis is None or values is None:
         raise ValidationError("You must provide both, the amount and the axis")
 
     if not check_if_printer_is_connected(printer):
@@ -121,7 +118,7 @@ def move_axis_printer(printer_id: int = None, axis: str = None, amount=None) -> 
     command_endpoint = "/api/printer/printhead"
 
     demanded_directions = axis.split(',')
-    provided_amounts = [int(value) for value in amount.split(",")]
+    provided_amounts = [int(value) for value in values.split(",")]
 
     if not len(demanded_directions) == len(provided_amounts):
         raise ValidationError("You must provide an equal amount of values for given amount of directions")
@@ -137,9 +134,6 @@ def move_axis_printer(printer_id: int = None, axis: str = None, amount=None) -> 
 
 
 def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
-
-    if temperature < 0:
-        raise ValidationError("The temperature cannot be lower than 0")
 
     printer = get_printer(printer_id)
 
@@ -169,6 +163,8 @@ def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
 def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer:
 
     printer = get_printer(printer_id)
+    if not check_if_printer_is_connected(printer):
+        raise ServiceUnavailable("The printer is not connected, check your connection")
 
     if len(temperatures) > printer.number_of_extruders:
         raise ValidationError("Too many temperature values provided, this printer only supports {ext} extrudes"
@@ -183,7 +179,7 @@ def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer
     for temperature_id in range(len(temperatures)):
         payload["targets"]["tool{tool_id}".format(tool_id=temperature_id)] = temperatures[temperature_id]
 
-    issue_command_to_printer(
+    req = issue_command_to_printer(
         printer_ip=printer.ip_address,
         printer_port=printer.port_number,
         endpoint=tool_temperature_endpoint,
@@ -191,14 +187,17 @@ def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer
         json=payload
     )
 
+    if req.status_code == 409:
+        raise ValidationError("The printer is not operational")
+
     return printer
 
 
 def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printer:
     printer = get_printer(printer_id)
 
-    if temperature < 0:
-        raise ValidationError("The temperature cannot be lower than 0")
+    if not check_if_printer_is_connected(printer):
+        raise ServiceUnavailable("The printer is not connected, check your connection")
 
     if not printer.has_heated_chamber:
         raise ValidationError("The printer has no heated chamber")
@@ -210,13 +209,16 @@ def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printe
         "target": temperature
     }
 
-    issue_command_to_printer(
+    req = issue_command_to_printer(
         printer_ip=printer.ip_address,
         printer_port=printer.port_number,
         endpoint=chamber_temperature_endpoint,
         api_key=printer.X_Api_Key,
         json=payload
     )
+
+    if req.status_code == 409:
+        raise ValidationError("The printer is not operational")
 
     return printer
 

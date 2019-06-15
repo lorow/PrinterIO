@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
 
     path('api/printers/<int:printer_id>/commands/<str:commands>/', PrinterGCODECommandsAPI.as_view()),
-    path('api/printers/<int:printer_id>/move/<str:axis>/<str:amount>/', PrinterMoveAxisAPI.as_view()),
+    path('api/printers/<int:printer_id>/move/', PrinterMoveAxisAPI.as_view()),
 
     path('api/printers/<int:printer_id>/queue/', QueuesListApi.as_view()),
     path('api/printers/<int:printer_id>/queue/create/', QueueCreateApi.as_view()),

@@ -1,6 +1,5 @@
 from printerIO.services import check_if_printer_is_connected
 from printerIO.factiories import PrinterFactory
-from printerIO.models import Printer
 from django.test import TestCase
 import responses
 
@@ -11,7 +10,7 @@ class PrinterConnectionCheckingTests(TestCase):
         self.service = check_if_printer_is_connected
         self.printer = PrinterFactory()
 
-    def test_check_if_printer_is_conneted_fails_due_to_no_connection(self) -> None:
+    def test_check_if_printer_is_connected_fails_due_to_no_connection(self) -> None:
         """Tests whether or not the connection-checking service will return False as to
             the current state of the printer is other than Operational and thus not connected
         """

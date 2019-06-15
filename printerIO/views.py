@@ -39,10 +39,19 @@ class PrinterMoveAxisAPI(APIView):
     """Endpoint for moving around tools of the printer, you can provide only one axis with one value
     or multiple as [x,z], [10,20]"""
 
-    # TODO make it so that it utilizes an serializer
+    class InputSerializer(serializers.Serializer):
+        axis = serializers.ListField(child=serializers.CharField())
+        values = serializers.ListField(child=serializers.IntegerField())
 
-    def get(self, request, **kwargs):
-        move_axis_printer(**kwargs)
+    def get_serializer(self):
+        return self.InputSerializer()
+
+    def post(self, request, **kwargs):
+
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        move_axis_printer(**serializer.validated_data, printer_id=kwargs["printer_id"])
+
         return Response(data={**kwargs}, status=status.HTTP_200_OK)
 
 
