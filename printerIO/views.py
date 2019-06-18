@@ -186,7 +186,7 @@ class QueuesListApi(RetrieveAPIView):
         return self.QueueSerializer()
 
     def get(self, request, *args, **kwargs):
-        queues = get_queue_by_queue_id(kwargs['printer_id'])
+        queues = get_queue_by_printer_id(kwargs['printer_id'])
         data = self.QueueSerializer(queues, many=False)
         return Response(data.data, status=status.HTTP_200_OK)
 
@@ -203,9 +203,6 @@ class QueueCreateApi(CreateAPIView):
         return self.InputSerializer()
 
     def post(self, request, *args, **kwargs):
-        # TODO fix these bugs
-        # DOES NOT START PRINTING
-        # QUEUE DOES NOT COMMUNICATE WITH PRINTING MANAGER
 
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

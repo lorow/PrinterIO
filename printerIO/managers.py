@@ -40,6 +40,8 @@ class PrintingManager:
     def next_job(self, printer):
         """Check the state of the queue, and calls the next printing job if possible"""
 
+        # check if there is still something to print, if not, simply delete it
+        # if there is no such printer in the local queue, try deleting it just in case it exists uselessly
         if printer in self.current_queues:
             if not len(self.current_queues[printer]):
                 del self.current_queues[printer]
@@ -47,6 +49,8 @@ class PrintingManager:
 
             else:
                 self.print(printer)
+        else:
+            self.clean_queue(printer)
 
     @staticmethod
     def remove_model_from_queue(printer, model):

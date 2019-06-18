@@ -1,6 +1,5 @@
 from printerIO.selectors import get_printer, get_queue_by_printer_id, get_model
 from printerIO.utils import flatten_list, issue_command_to_printer
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import ValidationError
 from requests.exceptions import ConnectionError
 from printerIO.models import Queue, Printer
@@ -19,13 +18,15 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     if not check_if_printer_is_connected(get_printer(printer_id)):
         raise ServiceUnavailable("The printer is not connected, check your connection")
 
+    # try grabbing the queue by given printer, if it passes then simply add a model to it and notify the manager
+    # if it fails, then create it and start printing
     try:
         queue = get_queue_by_printer_id(printer_id=printer_id)
         new_queue = add_models_to_queue(queue, models)
 
         PrinterIOConfig.printing_manager.refresh_queue(new_queue, queue.printer)
 
-    except ObjectDoesNotExist:
+    except ValidationError:
         queue = create_queue(printer_id, models)
 
         PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
@@ -230,6 +231,9 @@ def create_queue(printer: int, printing_models: OrderedDict) -> Queue:
     queue.printing_models.set(flatten_list(printing_models.values()))
     queue.save()
 
+    # since the queue is save, let's notify our printing manager that it should make use of it
+    PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
+
     return queue
 
 
@@ -244,6 +248,11 @@ def add_models_to_queue(queue: Queue, models_to_add: dict) -> Queue:
         queue.printing_models.add(model.id)
 
     queue.save()
+
+    # since the queue has been updated, we should let the printer manager know that something's changed
+
+    PrinterIOConfig.printing_manager.refresh_queue(queue, queue.printer)
+
     return queue
 
 
@@ -253,6 +262,11 @@ def remove_models_from_queue(queue: Queue, models_to_remove: dict) -> Queue:
         queue.printing_models.remove(model.id)
 
     queue.save()
+
+    # since the queue has been updated, we should let the printer manager know that something's changed
+
+    PrinterIOConfig.printing_manager.refresh_queue(queue, queue.printer)
+
     return queue
 
 
