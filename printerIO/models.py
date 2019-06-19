@@ -5,10 +5,10 @@ from django.db import models
 
 # we will support only FDM printers for a while, so no resin just yet
 class Filament(models.Model):
-
+    objects = models.Manager()
     name = models.CharField(max_length=250)
-    producer = models.CharField(max_length=250),
-    colour = models.CharField(max_length=100),
+    producer = models.CharField(max_length=250)
+    colour = models.CharField(max_length=100)
     diameter = models.FloatField(max_length=5,
                                  choices=(
                                      (1.75, "1.75mm diameter"),
@@ -89,6 +89,7 @@ class PrintedModelQuality(models.Model):
 
 class TaskCategory(models.Model):
     name = models.CharField(max_length=100)
+    objects = models.Manager()
 
     def __str__(self):
         return self.name
@@ -101,6 +102,8 @@ class Task(models.Model):
     due = models.DateField(default=timezone.now, blank=True)
     category = models.ForeignKey(TaskCategory,
                                  on_delete=models.CASCADE)
+
+    objects = models.Manager()
 
     class Meta:
         ordering = ["-created"]

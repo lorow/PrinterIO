@@ -30,6 +30,28 @@ class PrinterViewSet(viewsets.ModelViewSet):
                         'is_paused', 'number_of_extruders', 'has_heated_chamber')
 
 
+class FilamentViewSet(viewsets.ModelViewSet):
+    queryset = Filament.objects.all()
+    serializer_class = FilamentSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('name', 'producer', 'colour', 'diameter',
+                        'weight', 'filament_left', 'filament_type', 'price')
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = TaskCategory.objects.all()
+    serializer_class = CategorySerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('name',)
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('title', 'created', 'due', 'category')
+
+
 class PrinterGCODECommandsAPI(APIView):
 
     def get(self, request, **kwargs):
