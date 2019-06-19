@@ -1,5 +1,24 @@
-from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
+from django.db import models
+
+
+# we will support only FDM printers for a while, so no resin just yet
+class Filament(models.Model):
+
+    name = models.CharField(max_length=250)
+    producer = models.CharField(max_length=250),
+    colour = models.CharField(max_length=100),
+    diameter = models.FloatField(max_length=5,
+                                 choices=(
+                                     (1.75, "1.75mm diameter"),
+                                     (3, "3mm diameter")
+                                 ),
+                                 default=1.75)
+    weight = models.FloatField(default=1)  # in kilos, so 0.6KG or 1KG
+    filament_left = models.FloatField(default=1)  # also in kilos
+    filament_type = models.CharField(max_length=250, default="PLA")
+    price = models.FloatField()
 
 
 class Printer(models.Model):
@@ -22,6 +41,8 @@ class Printer(models.Model):
     number_of_extruders = models.IntegerField(default=1)
     has_heated_chamber = models.BooleanField(default=False)
     X_Api_Key = models.TextField(default="")
+
+    filament = models.ManyToManyField(Filament, blank=True)
 
     def __str__(self):
         return '{name} of type {type}'.format(name=self.name,
@@ -64,3 +85,25 @@ class PrintedModelQuality(models.Model):
     )
 
     was_cancelled = models.BooleanField(default=False)
+
+
+class TaskCategory(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Task(models.Model):
+    title = models.CharField(max_length=250)
+    content = models.TextField(blank=True)
+    created = models.DateField(default=timezone.now)
+    due = models.DateField(default=timezone.now, blank=True)
+    category = models.ForeignKey(TaskCategory,
+                                 on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created"]
+
+    def __str__(self):
+        return self.title
