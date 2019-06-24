@@ -6,9 +6,9 @@ from django.db import models
 # we will support only FDM printers for a while, so no resin just yet
 class Filament(models.Model):
     objects = models.Manager()
-    name = models.CharField(max_length=250)
-    producer = models.CharField(max_length=250)
-    colour = models.CharField(max_length=100)
+    name = models.CharField(max_length=250, default="")
+    producer = models.CharField(max_length=250, default="")
+    colour = models.CharField(max_length=100, default="")
     diameter = models.FloatField(max_length=5,
                                  choices=(
                                      (1.75, "1.75mm diameter"),
@@ -107,6 +107,20 @@ class Task(models.Model):
 
     class Meta:
         ordering = ["-created"]
+
+    def __str__(self):
+        return self.title
+
+
+class Problem(models.Model):
+    objects = models.Manager()
+    severity = models.IntegerField(
+        validators=[MaxValueValidator(3), MinValueValidator(1)]
+    )
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    timestamp = models.DateField(default=timezone.now)
+    state = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title

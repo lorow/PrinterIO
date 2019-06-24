@@ -52,6 +52,13 @@ class TaskViewSet(viewsets.ModelViewSet):
     filterset_fields = ('title', 'created', 'due', 'category')
 
 
+class ProblemViewSet(viewsets.ModelViewSet):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('severity', 'title', 'description', 'timestamp', 'state')
+
+
 class PrinterGCODECommandsAPI(APIView):
 
     def get(self, request, **kwargs):

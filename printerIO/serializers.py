@@ -30,8 +30,7 @@ class FilamentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Filament
-        fields = ('name', 'producer', 'colour', 'diameter',
-                        'weight', 'filament_left', 'filament_type', 'price')
+        fields = ('name', 'producer', 'colour', 'diameter', 'weight', 'filament_left', 'filament_type', 'price')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -46,4 +45,11 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
+        fields = '__all__'
+
+
+class ProblemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Problem
         fields = '__all__'
