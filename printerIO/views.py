@@ -15,6 +15,7 @@ class PrintingModelViewSet(viewsets.ModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_fields = ('name', 'thing_dimensions')
 
+
 class QualityViewSet(viewsets.ModelViewSet):
     queryset = PrintedModelQuality.objects.all()
     serializer_class = PrintingQualitySerializer
@@ -124,7 +125,7 @@ class PrinterJobCancelApi(APIView):
     def get(self, request, **kwargs):
 
         cancel_print_job(**kwargs)
-        return Response(data={"status": ""}, status=status.HTTP_200_OK)
+        return Response(data={"status": "The job has been canceled successfully"}, status=status.HTTP_200_OK)
 
 
 class PrinterStartNextJobApi(APIView):
@@ -134,7 +135,7 @@ class PrinterStartNextJobApi(APIView):
 
     def get(self, request, **kwargs):
         call_next_job(**kwargs)
-        return Response()
+        return Response(data={"status": "Started next job successfully"}, status=status.HTTP_200_OK)
 
 
 class PrinterSetBedTemperatureApi(APIView):
