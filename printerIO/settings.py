@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'printerIO.apps.PrinterIOConfig',
+    'printerIO',
+    'printers',
+    'models',
     'django_filters'
 ]
 
