@@ -26,23 +26,23 @@ urlpatterns = [
     path('', include_docs_urls(title="PrinterIO API guide")),
     path('api/', include(router.urls)),
 
-    path('api/printers/<int:printer_id>/commands/<str:commands>/', PrinterGCODECommandsAPI.as_view()),
-    path('api/printers/<int:printer_id>/move/', PrinterMoveAxisAPI.as_view()),
+    path('api/printers/<int:printer_id>/commands/<str:commands>', PrinterGCODECommandsAPI.as_view()),
+    path('api/printers/<int:printer_id>/move', PrinterMoveAxisAPI.as_view()),
 
-    path('api/printers/<int:printer_id>/queue/', QueuesListApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/create/', QueueCreateApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/delete/', QueueDeleteApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/add/', AddModelsToQueueApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/remove/', RemoveModelsFromQueueApi.as_view()),
-    path('api/printers/<int:printer_id>/queue/next/', PrinterStartNextJobApi.as_view()),
+    path('api/printers/<int:printer_id>/queue', QueuesListApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/create', QueueCreateApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/delete', QueueDeleteApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/models/add', AddModelsToQueueApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/models/remove', RemoveModelsFromQueueApi.as_view()),
+    path('api/printers/<int:printer_id>/queue/next-job', PrinterStartNextJobApi.as_view()),
 
-    path('api/printers/<int:printer_id>/job/<int:file_id>/start/', PrinterJobStartApi.as_view()),
-    path('api/printers/<int:printer_id>/job/pause/', PrinterJobPauseApi.as_view()),
-    path('api/printers/<int:printer_id>/job/cancel/', PrinterJobCancelApi.as_view()),
+    path('api/printers/<int:printer_id>/job/<int:file_id>/start', PrinterJobStartApi.as_view()),
+    path('api/printers/<int:printer_id>/job/pause', PrinterJobPauseApi.as_view()),
+    path('api/printers/<int:printer_id>/job/cancel', PrinterJobCancelApi.as_view()),
 
-    path('api/printers/<int:printer_id>/temperature/bed/', PrinterSetBedTemperatureApi.as_view()),
-    path('api/printers/<int:printer_id>/temperature/tool/', PrinterSetToolTemperature.as_view()),
-    path('api/printers/<int:printer_id>/temperature/chamber/', PrinterSetChamberTemperature.as_view()),
+    path('api/printers/<int:printer_id>/temperature/bed', PrinterSetBedTemperatureApi.as_view()),
+    path('api/printers/<int:printer_id>/temperature/tool', PrinterSetToolTemperature.as_view()),
+    path('api/printers/<int:printer_id>/temperature/chamber', PrinterSetChamberTemperature.as_view()),
 
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls',  namespace='rest_framework'))
