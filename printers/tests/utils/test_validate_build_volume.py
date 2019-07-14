@@ -1,5 +1,5 @@
 from django.test import TestCase
-from printerIO.utils import validate_build_volume
+from printers.utils import validate_build_volume
 
 
 class ValidateBuildVolumeTests(TestCase):

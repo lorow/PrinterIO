@@ -1,11 +1,12 @@
-from printerIO.selectors import get_printer, get_queue_by_printer_id, get_model
-from printerIO.utils import flatten_list, issue_command_to_printer
-from rest_framework.exceptions import ValidationError
-from requests.exceptions import ConnectionError
-from printerIO.models import Queue, Printer
+from queues.services import add_models_to_queue, create_queue
+from queues.selectors import get_queue_by_printer_id
 from printerIO.apps import PrinterIOConfig
+from rest_framework.exceptions import *
+from models.selectors import get_model
 from collections import OrderedDict
-from printerIO.exceptions import *
+from .exceptions import *
+from .selectors import *
+from .utils import *
 import requests
 
 
@@ -21,12 +22,15 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     # try grabbing the queue by given printer, if it passes then simply add a model to it and notify the manager
     # if it fails, then create it and start printing
     try:
+        # from queue app
         queue = get_queue_by_printer_id(printer_id=printer_id)
         new_queue = add_models_to_queue(queue, models)
 
         PrinterIOConfig.printing_manager.refresh_queue(new_queue, queue.printer)
 
     except ValidationError:
+
+        # take it from queue app
         queue = create_queue(printer_id, models)
 
         PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
@@ -222,52 +226,6 @@ def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printe
         raise ValidationError("The printer is not operational")
 
     return printer
-
-
-def create_queue(printer: int, printing_models: OrderedDict) -> Queue:
-    """Service for creating queues"""
-    printer_object = Printer.objects.get(id=printer)
-    queue = Queue.objects.create(printer=printer_object)
-    queue.printing_models.set(flatten_list(printing_models.values()))
-    queue.save()
-
-    # since the queue is save, let's notify our printing manager that it should make use of it
-    PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
-
-    return queue
-
-
-def delete_queue(queue: Queue) -> None:
-    """Service that handles deletion of the queue"""
-    queue.delete()
-
-
-def add_models_to_queue(queue: Queue, models_to_add: dict) -> Queue:
-    """Service for adding models to the queue without re-adding existing ones"""
-    for model in flatten_list(models_to_add.values()):
-        queue.printing_models.add(model.id)
-
-    queue.save()
-
-    # since the queue has been updated, we should let the printer manager know that something's changed
-
-    PrinterIOConfig.printing_manager.refresh_queue(queue, queue.printer)
-
-    return queue
-
-
-def remove_models_from_queue(queue: Queue, models_to_remove: dict) -> Queue:
-    """Service for removing given models from the queue"""
-    for model in flatten_list(models_to_remove.values()):
-        queue.printing_models.remove(model.id)
-
-    queue.save()
-
-    # since the queue has been updated, we should let the printer manager know that something's changed
-
-    PrinterIOConfig.printing_manager.refresh_queue(queue, queue.printer)
-
-    return queue
 
 
 def check_if_printer_is_connected(printer_to_check: Printer) -> bool:

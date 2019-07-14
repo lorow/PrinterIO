@@ -1,4 +1,4 @@
-from printerIO.services import check_if_printer_is_connected
+from printers.services import check_if_printer_is_connected
 from printerIO.factiories import PrinterFactory
 from django.test import TestCase
 import responses

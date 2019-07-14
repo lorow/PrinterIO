@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from printerIO.managers import PrintingManager
+from printers.managers import PrintingManager
 
 
 class PrinterIOConfig(AppConfig):

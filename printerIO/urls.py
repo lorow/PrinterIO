@@ -19,8 +19,10 @@ from django.conf import settings
 from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from printerIO.routers import router
-from printerIO.views import *
 
+
+from printers.views import *
+from queues.views import *
 
 urlpatterns = [
     path('', include_docs_urls(title="PrinterIO API guide")),

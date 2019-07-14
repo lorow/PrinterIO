@@ -56,8 +56,8 @@ class PrintingManager:
     def remove_model_from_queue(printer, model):
         """removes the model from the queue"""
 
-        from printerIO.services import remove_models_from_queue
-        from printerIO.selectors import get_queue_by_printer_id
+        from queues.services import remove_models_from_queue
+        from queues.selectors import get_queue_by_printer_id
 
         models_to_delete = OrderedDict()
         models_to_delete["printing_models"] = [model]
@@ -69,8 +69,8 @@ class PrintingManager:
     def clean_queue(printer):
         """deletes the queue"""
 
-        from printerIO.selectors import get_queue_by_printer_id
-        from printerIO.services import delete_queue
+        from queues.selectors import get_queue_by_printer_id
+        from queues.services import delete_queue
 
         queue = get_queue_by_printer_id(printer.id)
         delete_queue(queue)
@@ -78,7 +78,7 @@ class PrintingManager:
     @staticmethod
     def issue_printing_command(printer, model):
         """Sends actual requests to the octoprint instance"""
-        from printerIO.utils import issue_command_to_printer
+        from .utils import issue_command_to_printer
         # TODO make it so user chooses where to send the files -> PrintingModel
         file_endpoint = "/api/files/local"
 

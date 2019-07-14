@@ -1,22 +1,9 @@
 from rest_framework import serializers
 from printerIO.models import *
+from printers.serializers import PrinterSerializer
+from models.serializers import PrintingModelSerializer
 
-
-class PrintingModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PrintingModel
-        fields = ('id', 'file', 'name', 'thing_dimensions')
-
-
-class PrinterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Printer
-        fields = ('id', 'name', 'thumbnail', 'build_volume',
-                  'printer_type', 'ip_address', 'port_number',
-                  'is_printing', 'is_paused', 'number_of_extruders',
-                  'has_heated_chamber', 'X_Api_Key')
-
-
+# stats app
 class PrintingQualitySerializer(serializers.ModelSerializer):
     printer = PrinterSerializer()
     model = PrintingModelSerializer()

@@ -1,6 +1,6 @@
-from printerIO.services import set_printer_bed_temperature
+from printers.services import set_printer_bed_temperature
 from rest_framework.exceptions import ValidationError
-from printerIO.exceptions import ServiceUnavailable
+from printers.exceptions import ServiceUnavailable
 from printerIO.factiories import PrinterFactory
 from django.test import TestCase
 import responses

@@ -2,6 +2,8 @@ from rest_framework import routers
 from rest_framework_extensions.routers import NestedRouterMixin
 from printerIO import views
 
+from models.views import *
+from printers.views import PrinterViewSet
 
 class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
 
@@ -10,8 +12,8 @@ class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
         self.trailing_slash = ''
 
 router = NestedDefaultRouter()
-router.register('models', views.PrintingModelViewSet)
-router.register('printers', views.PrinterViewSet)
+router.register('models', PrintingModelViewSet)
+router.register('printers', PrinterViewSet)
 router.register('results', views.QualityViewSet)
 router.register('filaments', views.FilamentViewSet)
 router.register('categories', views.CategoryViewSet)

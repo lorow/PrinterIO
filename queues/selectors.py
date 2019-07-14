@@ -1,23 +1,6 @@
-from printerIO.models import Queue, Printer, PrintingModel
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import ValidationError
-from typing import Iterable
-
-
-def get_models() -> Iterable[PrintingModel]:
-    return PrintingModel.objects.all()
-
-
-def get_model(model_id: int) -> PrintingModel:
-    return PrintingModel.objects.get(pk=model_id)
-
-
-def get_printers() -> Iterable[Printer]:
-    return Printer.objects.all()
-
-
-def get_printer(printer_id: int) -> Printer:
-    return Printer.objects.get(id=printer_id)
+from printerIO.models import Queue
 
 
 def get_queue_by_printer_id(printer_id: int) -> Queue:
