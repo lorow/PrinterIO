@@ -20,7 +20,7 @@ class PrinterViewSet(viewsets.ModelViewSet):
 
 class PrinterGCODECommandsAPI(APIView):
 
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         if "commands" not in kwargs:
             return Response(data={"status": "The command is missing"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -71,7 +71,7 @@ class PrinterJobPauseApi(APIView):
     """API endpoint for pausing the printing job. It can also be used to un-pause the job since it keeps the
     state
     """
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         pause_print_job(**kwargs)
         return Response(data={"status": "The job has been successfully paused"}, status=status.HTTP_200_OK)
 
@@ -80,7 +80,7 @@ class PrinterJobCancelApi(APIView):
     """
     API endpoint for canceling the printing job.
     """
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
 
         cancel_print_job(**kwargs)
         return Response(data={"status": "The job has been canceled successfully"}, status=status.HTTP_200_OK)
@@ -91,7 +91,7 @@ class PrinterStartNextJobApi(APIView):
     API endpoint for letting the PrinterIO system know that it can safely issue next print job
     """
 
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         call_next_job(**kwargs)
         return Response(data={"status": "Started next job successfully"}, status=status.HTTP_200_OK)
 
