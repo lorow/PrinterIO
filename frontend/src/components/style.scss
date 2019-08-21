@@ -77,4 +77,42 @@
 
     color: #3C454D;
 
+    transition: padding .1s linear;
+    transition: background-color .05s linear;
+ 
+    &:hover{
+        padding: 13px 15px
+    }
+
+    &:active{
+        background-color: rgba(245, 246, 250, 0.534);
+        border: 1px solid transparent;
+    }
+}
+
+.navbar__search__form{
+    display: flex;
+    flex-direction: row;
+    
+    width: 0vw;
+    display: none;
+
+    input{
+        align-self: center;
+        height: 60px;
+
+       width: 100%;
+        border: none;
+        border-radius: 11px;
+
+        margin-right: 20px;
+
+        background-color: #F5F6FA;
+        padding: 0px 0px 0px 20px;
+    }
+}
+
+.navbar__search__form--active{
+    display: flex;
+    width: 40vw;
 }
