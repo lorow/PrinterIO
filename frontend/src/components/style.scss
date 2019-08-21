@@ -1,0 +1,80 @@
+.navbar{
+    width: 100vw;
+    height: 89px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar__title{
+    margin-left: 100px;
+    
+    align-self: center;
+
+    font-size: 42px;
+    font-weight: 600;
+
+    background: -webkit-linear-gradient(219deg, #4514EB, #59B9F1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.navbar__links{
+    padding: 0;
+    list-style: none;
+    display: flex;
+    margin-right: 40px;
+    height: 89px;
+    position: relative;
+}
+
+.navbar__button{
+    background-color: transparent;
+    border: none;
+    align-self: center;
+}
+
+.navbar__item__holder{
+    display: flex;
+    align-content: center;
+}
+
+.navbar__item__holder--withSpacing{
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.navbar__profile{
+    display: flex;
+    align-items: center;
+}
+
+.navbar__profile__image{
+    width: 52px;
+    height: 52px;
+    border-radius: 11px;
+    margin-left: 12px;
+}
+
+.navbar__profile__caption{
+    color: #8F8F8F;
+    font-weight: 600;
+    margin-left: 10px;
+    span{
+        color: #3C454D;
+        font-weight: inherit;
+    }
+}
+
+.navbar__button--action{
+    border: 1px solid rgba($color: #4E4E4E, $alpha: .33);
+    border-radius: 11px;
+    padding: 12px 14px;
+
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+
+    color: #3C454D;
+
+}
