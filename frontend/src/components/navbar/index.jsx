@@ -23,7 +23,6 @@ export default function Navbar(props){
   return (
   <header className="navbar">
       <h1 className="navbar__title">PrinterIO</h1>
-
       <ul className="navbar__links" role="navigation">
         <li className="navbar__item__holder">
           <form className={searchFormClass} onChange={handleChangeInForm} onSubmit={handleChangeInForm}>
@@ -34,14 +33,12 @@ export default function Navbar(props){
           </button>
         </li>
         <li className="navbar__item__holder"><button className="navbar__button navbar__button--bell"><img src="/svg_icons/bellIcon.svg" alt="notiffication bell"/></button></li>
-
         <li className="navbar__item__holder navbar__item__holder--withSpacing">
           <figure className="navbar__profile">
             <figcaption className="navbar__profile__caption">Welcome back, <span>{username}!</span> </figcaption>
             <img className="navbar__profile__image" src={profileImageLink} alt={username}/>
           </figure>
         </li>
-        
         <li className="navbar__item__holder navbar__item__holder--withSpacing"><button className="navbar__button navbar__button--action">Print something!</button></li>
       </ul>
     </header>
