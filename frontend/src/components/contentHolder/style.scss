@@ -1,0 +1,26 @@
+.contentHolder{
+    width: 100vw;
+    height: calc(100% - 89px);
+    display: grid;
+    grid-template-columns: 258px 1fr;
+    grid-template-rows: 114px 1.5fr;
+    grid-template-areas: ". contentHolder__page__title" "contentHolder__sidemenu contentHolder__page__space";
+  }
+  
+  .contentHolder__page__space {
+       grid-area: contentHolder__page__space; 
+    }
+  
+  .contentHolder__page__title { 
+    grid-area: contentHolder__page__title;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .contentHolder__sidemenu {
+     grid-area: contentHolder__sidemenu;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+  }

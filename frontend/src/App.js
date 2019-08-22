@@ -2,13 +2,13 @@ import React from 'react';
 import './App.css';
 
 import Navbar from './components/navbar';
-import ContentContainer from './containers/contentContainer';
+import ContentHolder from './components/contentHolder';
 
 function App() {
   return (
     <div className="App">
       <Navbar />
-      <ContentContainer />
+      <ContentHolder />
     </div>
   );
 }
