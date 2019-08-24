@@ -1,19 +1,20 @@
 import React from 'react';
 import PageTitle from '../pageTitle'
+import Sidebar from '../sidebarContainer';
 import './style.scss'
 
 export default function ContentHolder(props){
-    return(
+  return(
 
-        <section className="contentHolder">
-            <div className="contentHolder__page__title">
-                <PageTitle />
-            </div>
+    <section className="contentHolder">
+      <div className="contentHolder__page__title">
+        <PageTitle />
+      </div>
 
-            <div className="contentHolder__sidemenu">
-                 here's gonna be a sidemenu
-            </div>
-        </section>
+      <div className="contentHolder__sidemenu">
+        <Sidebar />
+      </div>
+    </section>
 
-    )
+  )
 }

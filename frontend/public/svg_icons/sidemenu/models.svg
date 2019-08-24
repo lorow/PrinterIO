@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="43.553" height="41.878" viewBox="0 0 43.553 41.878">
+  <g id="models" transform="translate(-7573.447 -543.546)">
+    <g id="Polygon_4" data-name="Polygon 4" transform="translate(7587.938 543.546) rotate(30)" fill="none">
+      <path d="M25.168,0l8.389,14.491L25.168,28.982H8.389L0,14.491,8.389,0Z" stroke="none"/>
+      <path d="M 9.542564392089844 2 L 2.310998916625977 14.49088954925537 L 9.542564392089844 26.98177909851074 L 24.01528167724609 26.98177909851074 L 31.24684715270996 14.49088954925537 L 24.01528167724609 2 L 9.542564392089844 2 M 8.389463424682617 0 L 25.16838264465332 0 L 33.55784225463867 14.49088954925537 L 25.16838264465332 28.98177909851074 L 8.389463424682617 28.98177909851074 L 3.814697265625e-06 14.49088954925537 L 8.389463424682617 0 Z" stroke="none" fill="#081319"/>
+    </g>
+    <rect id="Rectangle_128" data-name="Rectangle 128" width="1.525" height="17.542" transform="translate(7594.461 562.959)" fill="#081319"/>
+    <path id="Path_13" data-name="Path 13" d="M.016.466,1.823,0V15.254H0Z" transform="translate(7595.574 563.252) rotate(120)" fill="#081319"/>
+    <path id="Path_14" data-name="Path 14" d="M.016.468,1.824,0V15.343H0Z" transform="translate(7595.479 564.832) rotate(-120)" fill="#081319"/>
+  </g>
+</svg>

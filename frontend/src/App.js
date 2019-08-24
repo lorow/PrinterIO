@@ -6,10 +6,10 @@ import ContentHolder from './components/contentHolder';
 
 function App() {
   return (
-    <div className="App">
+    <main className="App">
       <Navbar />
       <ContentHolder />
-    </div>
+    </main>
   );
 }
 

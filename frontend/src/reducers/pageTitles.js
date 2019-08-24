@@ -6,7 +6,7 @@ const pageTitles = (state= "", action) => {
             return action.text
         
         default:
-            return "default title"
+            return "Dashboard"
     }
 }
 
