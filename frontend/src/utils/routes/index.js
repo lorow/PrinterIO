@@ -1,3 +1,5 @@
+import DashboardPage from '../../components/dashboardPage';
+
 export default function Routes(){
   return (
     [
@@ -6,7 +8,7 @@ export default function Routes(){
         site_name: 'Dashboard',
         classes: ['dashboard', 'sideBarLink'],
         active_class: 'dashboard--active sideBarLink--active',
-        Component: null
+        Component: DashboardPage
       },
       { 
         path: '/spools',
