@@ -17,7 +17,8 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     models["printing_models"] = [get_model(file_id)]
 
     if not check_if_printer_is_connected(get_printer(printer_id)):
-        raise ServiceUnavailable("The printer is not connected, check your connection")
+        raise ServiceUnavailable(
+            "The printer is not connected, check your connection")
 
     # try grabbing the queue by given printer, if it passes then simply add a model to it and notify the manager
     # if it fails, then create it and start printing
@@ -26,7 +27,8 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
         queue = get_queue_by_printer_id(printer_id=printer_id)
         new_queue = add_models_to_queue(queue, models)
 
-        PrinterIOConfig.printing_manager.refresh_queue(new_queue, queue.printer)
+        PrinterIOConfig.printing_manager.refresh_queue(
+            new_queue, queue.printer)
 
     except ValidationError:
 
@@ -84,7 +86,8 @@ def pause_print_job(printer_id: int) -> None:
         printer.is_paused = not is_currently_printing
         printer.save()
     else:
-        raise ValidationError("Cannot pause since the printer isn't currently printing")
+        raise ValidationError(
+            "Cannot pause since the printer isn't currently printing")
 
 
 def call_next_job(printer_id: int) -> None:
@@ -98,15 +101,18 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable("The printer is not connected, check connection")
+        raise ServiceUnavailable(
+            "The printer is not connected, check connection")
 
     command_endpoint = "/api/printer/command"
 
-    issue_command_to_printer(printer_ip=printer.ip_address,
-                             printer_port=printer.port_number,
-                             endpoint=command_endpoint,
-                             api_key=printer.X_Api_Key,
-                             json={"commands": commands.split(',')})
+    issue_command_to_printer(
+        printer_ip=printer.ip_address,
+        printer_port=printer.port_number,
+        endpoint=command_endpoint,
+        api_key=printer.X_Api_Key,
+        json={"commands": commands.split(',')}
+    )
 
 
 def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> None:
@@ -118,7 +124,8 @@ def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> 
         raise ValidationError("You must provide both, the amount and the axis")
 
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable("The printer is not connected, check connection")
+        raise ServiceUnavailable(
+            "The printer is not connected, check connection")
 
     command_endpoint = "/api/printer/printhead"
 
@@ -126,16 +133,19 @@ def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> 
     provided_amounts = [int(value) for value in values.split(",")]
 
     if not len(demanded_directions) == len(provided_amounts):
-        raise ValidationError("You must provide an equal amount of values for given amount of directions")
+        raise ValidationError(
+            "You must provide an equal amount of values for given amount of directions")
 
     payload = dict(zip(demanded_directions, provided_amounts))
     payload["command"] = "jog"
 
-    issue_command_to_printer(printer_ip=printer.ip_address,
-                             printer_port=printer.port_number,
-                             endpoint=command_endpoint,
-                             api_key=printer.X_Api_Key,
-                             json=payload)
+    issue_command_to_printer(
+        printer_ip=printer.ip_address,
+        printer_port=printer.port_number,
+        endpoint=command_endpoint,
+        api_key=printer.X_Api_Key,
+        json=payload
+    )
 
 
 def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
@@ -143,7 +153,8 @@ def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable("The printer is not connected, check your connection")
+        raise ServiceUnavailable(
+            "The printer is not connected, check your connection")
 
     temperature_endpoint = "/api/printer/bed"
     payload = {
@@ -169,11 +180,15 @@ def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer
 
     printer = get_printer(printer_id)
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable("The printer is not connected, check your connection")
+        raise ServiceUnavailable(
+            "The printer is not connected, check your connection")
 
     if len(temperatures) > printer.number_of_extruders:
-        raise ValidationError("Too many temperature values provided, this printer only supports {ext} extrudes"
-                              .format(ext=printer.number_of_extruders))
+        raise ValidationError(
+            "Too many temperature values provided, this printer only supports {ext} extrudes".format(
+                ext=printer.number_of_extruders
+            )
+        )
 
     tool_temperature_endpoint = "/api/printer/tool"
 
@@ -182,7 +197,8 @@ def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer
     payload["targets"] = {}
 
     for temperature_id in range(len(temperatures)):
-        payload["targets"]["tool{tool_id}".format(tool_id=temperature_id)] = temperatures[temperature_id]
+        payload["targets"]["tool{tool_id}".format(
+            tool_id=temperature_id)] = temperatures[temperature_id]
 
     req = issue_command_to_printer(
         printer_ip=printer.ip_address,
@@ -202,7 +218,8 @@ def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printe
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable("The printer is not connected, check your connection")
+        raise ServiceUnavailable(
+            "The printer is not connected, check your connection")
 
     if not printer.has_heated_chamber:
         raise ValidationError("The printer has no heated chamber")

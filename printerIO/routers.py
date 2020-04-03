@@ -5,11 +5,13 @@ from printerIO import views
 from models.views import *
 from printers.views import PrinterViewSet
 
+
 class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
 
     def __init__(self):
         super().__init__()
         self.trailing_slash = ''
+
 
 router = NestedDefaultRouter()
 router.register('models', PrintingModelViewSet)

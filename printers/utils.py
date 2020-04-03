@@ -1,14 +1,23 @@
 import requests
 
 
-def validate_build_volume(build_volume):
+def validate_build_volume(build_volume, printer_type="CR"):
 
     if not build_volume:
         raise ValueError("No build volume has been provided")
 
     axis = build_volume.split('x')
 
-    if len(axis) != 3:
+    num_of_dimensions = {
+        "CR": 3,
+        "DL": 2,
+        "RS": 3,
+    }
+
+    if printer_type not in num_of_dimensions:
+        raise ValueError("Given printer type is not supported")
+
+    if len(axis) != num_of_dimensions[printer_type]:
         return False
 
     try:

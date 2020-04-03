@@ -4,6 +4,8 @@ from printers.serializers import PrinterSerializer
 from models.serializers import PrintingModelSerializer
 
 # stats app
+
+
 class PrintingQualitySerializer(serializers.ModelSerializer):
     printer = PrinterSerializer()
     model = PrintingModelSerializer()
@@ -17,7 +19,9 @@ class FilamentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Filament
-        fields = ('name', 'producer', 'colour', 'diameter', 'weight', 'filament_left', 'filament_type', 'price')
+        fields = (
+            'name', 'producer', 'colour', 'diameter', 'weight',
+            'filament_left', 'filament_type', 'price')
 
 
 class CategorySerializer(serializers.ModelSerializer):

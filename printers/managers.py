@@ -97,12 +97,16 @@ class PrintingManager:
         # the upload had worked, we may proceed
         if file_req.status_code == 201:
 
-            select_and_print_file_endpoint = "/api/files/local/{filename}".format(filename=model.file)
+            select_and_print_file_endpoint = "/api/files/local/{filename}".format(
+                filename=model.file
+            )
             issue_command_to_printer(
                 printer_ip=printer.ip_address,
                 printer_port=printer.port_number,
                 endpoint=select_and_print_file_endpoint,
                 api_key=printer.X_Api_Key,
-                json={"command": "select",
-                      "print": True}
+                json={
+                    "command": "select",
+                    "print": True
+                }
             )

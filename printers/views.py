@@ -45,7 +45,8 @@ class PrinterMoveAxisAPI(APIView):
 
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        move_axis_printer(**serializer.validated_data, printer_id=kwargs["printer_id"])
+        move_axis_printer(**serializer.validated_data,
+                          printer_id=kwargs["printer_id"])
 
         return Response(data={**kwargs}, status=status.HTTP_200_OK)
 
@@ -55,22 +56,25 @@ class PrinterJobStartApi(APIView):
     job won't start unless the printer is set as "ready to print" NOTE 2: If there is an existing queue, the file will
     be added to it
     """
+
     def post(self, request, **kwargs):
 
         printer_data = start_print_job(**kwargs)
-        return Response(data={"status": "The job has been started successfully",
-                              "socket_connection_info": {
-                                  "ip": printer_data.ip_address,
-                                  "port": printer_data.port_number,
-                                  "endpoint": "/chuj/to/wie"
-                              }},
-                        status=status.HTTP_200_OK)
+        return Response(data={
+            "status": "The job has been started successfully",
+            "socket_connection_info": {
+                "ip": printer_data.ip_address,
+                "port": printer_data.port_number,
+                "endpoint": "/chuj/to/wie"
+            }},
+            status=status.HTTP_200_OK)
 
 
 class PrinterJobPauseApi(APIView):
     """API endpoint for pausing the printing job. It can also be used to un-pause the job since it keeps the
     state
     """
+
     def post(self, request, **kwargs):
         pause_print_job(**kwargs)
         return Response(data={"status": "The job has been successfully paused"}, status=status.HTTP_200_OK)
@@ -80,6 +84,7 @@ class PrinterJobCancelApi(APIView):
     """
     API endpoint for canceling the printing job.
     """
+
     def post(self, request, **kwargs):
 
         cancel_print_job(**kwargs)
@@ -113,11 +118,12 @@ class PrinterSetBedTemperatureApi(APIView):
             temperature=data.validated_data["temperature"]
         )
 
-        return Response(data={"status": "The temperature for the {tool} has been successfully set to {temp}"
-                        .format(tool=data.validated_data["tool_type"],
-                                temp=data.validated_data["temperature"])},
+        return Response(data={
+            "status": "The temperature for the {tool} has been successfully set to {temp}".format(
+                tool=data.validated_data["tool_type"],
+                temp=data.validated_data["temperature"])},
 
-                        status=status.HTTP_200_OK)
+            status=status.HTTP_200_OK)
 
 
 class PrinterSetToolTemperature(APIView):
@@ -132,7 +138,8 @@ class PrinterSetToolTemperature(APIView):
 
         data = self.InputSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        set_printer_tool_temperature(kwargs["printer_id"], data.validated_data["temperatures"])
+        set_printer_tool_temperature(
+            kwargs["printer_id"], data.validated_data["temperatures"])
 
         return Response(data={"status": "The temperatures for the tools have been set successfully"},
                         status=status.HTTP_200_OK)
@@ -150,7 +157,8 @@ class PrinterSetChamberTemperature(APIView):
         data = self.InputSerializer(data=request.data)
         data.is_valid(raise_exception=True)
 
-        set_printer_chamber_temperature(kwargs["printer_id"], data.validated_data["temperature"])
+        set_printer_chamber_temperature(
+            kwargs["printer_id"], data.validated_data["temperature"])
 
         return Response(data={"status": "The temperature for the chamber has been set successfully"},
                         status=status.HTTP_200_OK)

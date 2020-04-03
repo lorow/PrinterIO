@@ -1,4 +1,6 @@
-from rest_framework.generics import CreateAPIView, DestroyAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    CreateAPIView, DestroyAPIView, RetrieveAPIView
+)
 from printerIO.models import Queue, PrintingModel
 from rest_framework import status
 from rest_framework.views import APIView
@@ -14,7 +16,8 @@ class QueuesListApi(RetrieveAPIView):
     queryset = Queue.objects.all()
 
     class QueueSerializer(serializers.ModelSerializer):
-        printing_models = PrintingModelSerializer(read_only=True, many=True, required=False)
+        printing_models = PrintingModelSerializer(
+            read_only=True, many=True, required=False)
         printing_models_id = serializers.PrimaryKeyRelatedField(
             queryset=PrintingModel.objects.all(), source='printing_models', write_only=True, many=True, required=False
         )
@@ -34,11 +37,12 @@ class QueuesListApi(RetrieveAPIView):
 
 class QueueCreateApi(CreateAPIView):
     class InputSerializer(serializers.Serializer):
-        printing_models_ids = serializers.PrimaryKeyRelatedField(source='printing_models',
-                                                                 write_only=True,
-                                                                 many=True,
-                                                                 queryset=PrintingModel.objects.all(),
-                                                                 help_text="Ids of models you want to add to the queue")
+        printing_models_ids = serializers.PrimaryKeyRelatedField(
+            source='printing_models',
+            write_only=True,
+            many=True,
+            queryset=PrintingModel.objects.all(),
+            help_text="Ids of models you want to add to the queue")
 
     def get_serializer(self):
         return self.InputSerializer()

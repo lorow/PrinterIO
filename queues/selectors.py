@@ -9,8 +9,10 @@ def get_queue_by_printer_id(printer_id: int) -> Queue:
     except ObjectDoesNotExist:
         raise ValidationError("This queue does not exist")
 
+
 def get_queue_by_queue_id(queue_id: int) -> Queue or None:
     try:
         return Queue.objects.get(pk=queue_id)
     except ObjectDoesNotExist:
         raise ValidationError("This queue does not exist")
+    
