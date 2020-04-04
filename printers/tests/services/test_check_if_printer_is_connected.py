@@ -2,6 +2,8 @@ from printers.services import check_if_printer_is_connected
 from printerIO.factiories import PrinterFactory
 from django.test import TestCase
 import responses
+import pytest
+pytestmark = pytest.mark.django_db
 
 
 class PrinterConnectionCheckingTests(TestCase):
@@ -11,8 +13,10 @@ class PrinterConnectionCheckingTests(TestCase):
         self.printer = PrinterFactory()
 
     def test_check_if_printer_is_connected_fails_due_to_no_connection(self) -> None:
-        """Tests whether or not the connection-checking service will return False as to
-            the current state of the printer is other than Operational and thus not connected
+        """
+            Tests whether or not the connection-checking
+            service will return False as to the current state of
+            the printer is other than Operational and thus not connected
         """
         with responses.RequestsMock() as resp:
             resp.add(
@@ -26,8 +30,10 @@ class PrinterConnectionCheckingTests(TestCase):
             self.assertFalse(self.service(self.printer))
 
     def test_check_if_printer_is_connected_passes_due_to_existing_connection(self) -> None:
-        """Tests whether or not the connection-checking service will return True
-            as to the connection between octoprint and the printer itself is Operational
+        """
+        Tests whether or not the connection-checking
+        service will return True as to the connection
+        between octoprint and the printer itself is Operational
         """
 
         with responses.RequestsMock() as resp:
@@ -42,8 +48,9 @@ class PrinterConnectionCheckingTests(TestCase):
             self.assertTrue(self.service(self.printer))
 
     def test_check_if_printer_is_connected_fails_due_to_server_being_offline(self) -> None:
-        """Tests whether or not the connection-checking service will return False
-            as to the connection attempt failing due to server being offline
+        """
+        Tests whether or not the connection-checking service will return False
+        as to the connection attempt failing due to server being offline
         """
 
         self.assertFalse(self.service(self.printer))

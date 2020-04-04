@@ -153,8 +153,10 @@ def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
+        print("CHUJ")
         raise ServiceUnavailable(
-            "The printer is not connected, check your connection")
+            "The printer is not connected, check your connection"
+        )
 
     temperature_endpoint = "/api/printer/bed"
     payload = {

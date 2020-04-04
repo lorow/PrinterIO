@@ -4,6 +4,8 @@ from printers.exceptions import ServiceUnavailable
 from printerIO.factiories import PrinterFactory
 from django.test import TestCase
 import responses
+import pytest
+pytestmark = pytest.mark.django_db
 
 
 class PrinterToolTemperatureChangingServiceTests(TestCase):
@@ -39,9 +41,10 @@ class PrinterToolTemperatureChangingServiceTests(TestCase):
                     "X-Api-Key": self.printer.X_Api_Key,
                     "Content-Type": "application/json"
                 },
-                json={"command": "target",
-                      "target": self.temperatures
-                      },
+                json={
+                    "command": "target",
+                    "target": self.temperatures
+                },
                 status=409
             )
 
@@ -68,9 +71,10 @@ class PrinterToolTemperatureChangingServiceTests(TestCase):
                     "X-Api-Key": self.printer.X_Api_Key,
                     "Content-Type": "application/json"
                 },
-                json={"command": "target",
-                      "target": self.temperatures_outmatching_the_number_of_extruders
-                      },
+                json={
+                    "command": "target",
+                    "target": self.temperatures_outmatching_the_number_of_extruders
+                },
                 status=409
             )
 
@@ -97,9 +101,10 @@ class PrinterToolTemperatureChangingServiceTests(TestCase):
                     "X-Api-Key": self.printer.X_Api_Key,
                     "Content-Type": "application/json"
                 },
-                json={"command": "target",
-                      "target": self.temperatures
-                      },
+                json={
+                    "command": "target",
+                    "target": self.temperatures
+                },
                 status=200
             )
             printer = self.service(self.printer.id, self.temperatures)

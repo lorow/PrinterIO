@@ -1,5 +1,7 @@
 from django.test import TestCase
 from printerIO.utils import flatten_list
+import pytest
+pytestmark = pytest.mark.django_db
 
 
 class FlattenListTests(TestCase):

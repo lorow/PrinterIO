@@ -3,6 +3,8 @@ from queues.selectors import get_queue_by_queue_id
 from queues.services import create_queue
 from collections import OrderedDict
 from django.test import TestCase
+import pytest
+pytestmark = pytest.mark.django_db
 
 
 class CreateQueueTest(TestCase):
@@ -18,6 +20,9 @@ class CreateQueueTest(TestCase):
         self.service = create_queue
 
     def test_whether_the_queue_is_being_created(self):
-        """test whether or not the created queue is the same as the one in the database"""
+        """
+            test whether or not the created queue
+            is the same as the one in the database
+        """
         queue = self.service(self.printer.id, self.printing_models)
         self.assertEquals(queue, get_queue_by_queue_id(queue.printer.id))

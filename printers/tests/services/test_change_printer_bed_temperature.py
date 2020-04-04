@@ -4,6 +4,8 @@ from printers.exceptions import ServiceUnavailable
 from printerIO.factiories import PrinterFactory
 from django.test import TestCase
 import responses
+import pytest
+pytestmark = pytest.mark.django_db
 
 
 class PrinterBedTemperatureChangingServiceTests(TestCase):
@@ -15,7 +17,7 @@ class PrinterBedTemperatureChangingServiceTests(TestCase):
 
     def test_set_printer_bed_temperature_fail_due_to_no_connection(self) -> None:
 
-        with self.assertRaises(ServiceUnavailable):
+        with pytest.raises(ServiceUnavailable):
             self.service(self.printer.id, self.temperature)
 
     def test_if_printer_bed_temperature_raises_ValidationError(self) -> None:
@@ -38,13 +40,14 @@ class PrinterBedTemperatureChangingServiceTests(TestCase):
                     "X-Api-Key": self.printer.X_Api_Key,
                     "Content-Type": "application/json"
                 },
-                json={"command": "target",
-                      "target": self.temperature
-                      },
+                json={
+                    "command": "target",
+                    "target": self.temperature
+                },
                 status=409
             )
 
-            with self.assertRaises(ValidationError):
+            with pytest.raises(ValidationError):
                 self.service(self.printer.id, self.temperature)
 
     def test_printer_bed_temperature_returns_printer_and_passes(self):
@@ -67,9 +70,10 @@ class PrinterBedTemperatureChangingServiceTests(TestCase):
                     "X-Api-Key": self.printer.X_Api_Key,
                     "Content-Type": "application/json"
                 },
-                json={"command": "target",
-                      "target": self.temperature
-                      },
+                json={
+                    "command": "target",
+                    "target": self.temperature
+                },
                 status=200
             )
             printer = self.service(self.printer.id, self.temperature)

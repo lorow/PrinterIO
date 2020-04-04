@@ -1,5 +1,7 @@
 from django.test import TestCase
 from printers.utils import validate_build_volume
+import pytest
+pytestmark = pytest.mark.django_db
 
 
 class ValidateBuildVolumeTests(TestCase):
