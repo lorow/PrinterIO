@@ -1,5 +1,7 @@
 [run]
 omit = 
+  *djangoenv/*,
+  *__init__.py*,
   *apps.py,
   *migrations/*,
   *settings*,
