@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ydmagw%&uowsy!x!*fqro0g@rgn-0*ywke$5umjr9-5r%18cck'
+SECRET_KEY = os.environ.get("PRINTERIO")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,11 +87,11 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'printerio',
-        'USER': 'postgres',
-        'PASSWORD': 'tandeta23',
-        'HOST': 'localhost',
-        'PORT': ''
+        'NAME': os.environ.get("PRINTERIO_DB_NAME"),
+        'USER': os.environ.get("PRINTERIO_DB_USER"),
+        'PASSWORD': os.environ.get("PRINTERIO_DB_PASS"),
+        'HOST': os.environ.get("PRINTERIO_DB_HOST"),
+        'PORT': os.environ.get("PRINTERIO_DB_PORT")
     }
 }
 
