@@ -143,7 +143,7 @@ class PrinterSetTemperatureApi(APIView):
 
     class PrinterTempSerializer(serializers.Serializer):
         temperatures = serializers.ListField(child=serializers.IntegerField())
-        tool_type = serializers.ChoiceField(choices=["bed", "head", "chamber"])
+        tool_type = serializers.ChoiceField(choices=["bed", "tool", "chamber"])
 
     def get_serializer(self):
         return self.PrinterTempSerializer()

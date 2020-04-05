@@ -157,7 +157,7 @@ def set_printer_temperature(
 
     endpoint_by_tool = {
         "bed": "/api/printer/bed",
-        "head": "/api/printer/tool",
+        "tool": "/api/printer/tool",
         "chamber": "/api/printer/chamber",
     }
 
@@ -176,7 +176,7 @@ def set_printer_temperature(
         # simple task we have, one temperature set we can
         payload["target"] = temperatures[0]
 
-    if tool_type == "head":
+    if tool_type == "tool":
         # validate if we ain't exceeding the amout of toolheads we can handle
 
         if len(temperatures) > printer.number_of_extruders:
