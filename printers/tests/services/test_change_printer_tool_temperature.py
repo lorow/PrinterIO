@@ -1,112 +1,51 @@
-from printers.services import set_printer_tool_temperature
+from printers.services import set_printer_temperature
 from rest_framework.exceptions import ValidationError
 from printers.exceptions import ServiceUnavailable
 from printerIO.factories import PrinterFactory
-from django.test import TestCase
 import responses
 import pytest
 pytestmark = pytest.mark.django_db
 
 
-# class PrinterToolTemperatureChangingServiceTests(TestCase):
+@pytest.fixture
+def printer_fixture():
+    return PrinterFactory()
 
-#     def setUp(self) -> None:
-#         self.printer = PrinterFactory()
-#         self.service = set_printer_tool_temperature
-#         self.temperatures = [120]
-#         self.temperatures_outmatching_the_number_of_extruders = [120, 30]
 
-#     def test_set_printer_tool_temperature_fail_due_to_no_connection(self) -> None:
+class TestSetPrinterTemperature:
 
-#         with self.assertRaises(ServiceUnavailable):
-#             self.service(self.printer.id, self.temperatures)
+    def test_set_printer_bed_temperature(self, printer_fixture):
+        """
+            This will fail when the fucntion raises either ValidationError
+            or ServiceUnavailable due to
+            the fact that we can't do: with not pytest.raises()
+        """
+        with responses.RequestsMock() as resp:
+            # we need to mock the connection test first
+            resp.add(
+                resp.GET,
+                f'http://{printer_fixture.ip_address}:{printer_fixture.port_number}/api/connection',
+                json={"current": {"state": "Operational"}}
+            )
+            # then we can mock the tool connection
+            resp.add(
+                resp.POST, 'http://{printer_ip}:{printer_port}/api/printer/bed'.format(
+                    printer_ip=printer_fixture.ip_address,
+                    printer_port=printer_fixture.port_number
+                ),
+                adding_headers={
+                    "X-Api-Key": printer_fixture.X_Api_Key,
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "command": "target",
+                    "target": [60]
+                },
+                status=200
+            )
 
-#     def test_if_printer_tool_temperature_raises_ValidationError(self) -> None:
-
-#         with responses.RequestsMock() as resp:
-#             resp.add(
-#                 resp.GET, 'http://{printer_ip}:{printer_port}/api/connection'.format(
-#                     printer_ip=self.printer.ip_address,
-#                     printer_port=self.printer.port_number
-#                 ),
-#                 json={"current": {"state": "Operational"}}
-#             )
-
-#             resp.add(
-#                 resp.POST, 'http://{printer_ip}:{printer_port}/api/printer/tool'.format(
-#                     printer_ip=self.printer.ip_address,
-#                     printer_port=self.printer.port_number
-#                 ),
-#                 adding_headers={
-#                     "X-Api-Key": self.printer.X_Api_Key,
-#                     "Content-Type": "application/json"
-#                 },
-#                 json={
-#                     "command": "target",
-#                     "target": self.temperatures
-#                 },
-#                 status=409
-#             )
-
-#             with self.assertRaises(ValidationError):
-#                 self.service(self.printer.id, self.temperatures)
-
-#     def test_if_printer_tool_temperature_fails_due_to_having_too_many_temperatures_provided(self) -> None:
-
-#         with responses.RequestsMock() as resp:
-#             resp.add(
-#                 resp.GET, 'http://{printer_ip}:{printer_port}/api/connection'.format(
-#                     printer_ip=self.printer.ip_address,
-#                     printer_port=self.printer.port_number
-#                 ),
-#                 json={"current": {"state": "Operational"}}
-#             )
-
-#             resp.add(
-#                 resp.POST, 'http://{printer_ip}:{printer_port}/api/printer/tool'.format(
-#                     printer_ip=self.printer.ip_address,
-#                     printer_port=self.printer.port_number
-#                 ),
-#                 adding_headers={
-#                     "X-Api-Key": self.printer.X_Api_Key,
-#                     "Content-Type": "application/json"
-#                 },
-#                 json={
-#                     "command": "target",
-#                     "target": self.temperatures_outmatching_the_number_of_extruders
-#                 },
-#                 status=409
-#             )
-
-#             with self.assertRaises(ValidationError):
-#                 self.service(self.printer.id, self.temperatures)
-
-#     def test_printer_tool_temperature_returns_printer_and_passes(self):
-
-#         with responses.RequestsMock() as resp:
-#             resp.add(
-#                 resp.GET, 'http://{printer_ip}:{printer_port}/api/connection'.format(
-#                     printer_ip=self.printer.ip_address,
-#                     printer_port=self.printer.port_number
-#                 ),
-#                 json={"current": {"state": "Operational"}}
-#             )
-
-#             resp.add(
-#                 resp.POST, 'http://{printer_ip}:{printer_port}/api/printer/tool'.format(
-#                     printer_ip=self.printer.ip_address,
-#                     printer_port=self.printer.port_number
-#                 ),
-#                 adding_headers={
-#                     "X-Api-Key": self.printer.X_Api_Key,
-#                     "Content-Type": "application/json"
-#                 },
-#                 json={
-#                     "command": "target",
-#                     "target": self.temperatures
-#                 },
-#                 status=200
-#             )
-#             printer = self.service(self.printer.id, self.temperatures)
-
-#             self.assertEqual(printer, self.printer)
+            set_printer_temperature(
+                printer_fixture.pk,
+                "bed",
+                [60]
+            )

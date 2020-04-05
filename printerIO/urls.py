@@ -69,12 +69,8 @@ urlpatterns = [
     path('api/printers/<int:printer_id>/job/cancel',
          PrinterJobCancelApi.as_view()),
 
-    path('api/printers/<int:printer_id>/temperature/bed',
-         PrinterSetBedTemperatureApi.as_view()),
-    path('api/printers/<int:printer_id>/temperature/tool',
-         PrinterSetToolTemperature.as_view()),
-    path('api/printers/<int:printer_id>/temperature/chamber',
-         PrinterSetChamberTemperature.as_view()),
+    path('api/printers/<int:printer_id>/temperature/set',
+         PrinterSetTemperatureApi.as_view()),
 
     path('admin/', admin.site.urls),
     path('auth/', include("djoser.urls")),

@@ -1,6 +1,5 @@
 from printerIO.utils import flatten_list
 from printerIO.models import Queue, Printer, PrintingModel
-from printerIO.apps import PrinterIOConfig
 from collections import OrderedDict
 from typing import Iterable
 

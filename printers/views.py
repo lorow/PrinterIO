@@ -139,21 +139,22 @@ class PrinterStartNextJobApi(APIView):
         )
 
 
-class PrinterSetBedTemperatureApi(APIView):
+class PrinterSetTemperatureApi(APIView):
 
-    class BedTempSerializer(serializers.Serializer):
-        temperature = serializers.IntegerField()
+    class PrinterTempSerializer(serializers.Serializer):
+        temperatures = serializers.ListField(child=serializers.IntegerField())
+        tool_type = serializers.ChoiceField(choices=["bed", "head", "chamber"])
 
     def get_serializer(self):
-        return self.BedTempSerializer()
+        return self.PrinterTempSerializer()
 
     def post(self, request, **kwargs):
-        data = self.BedTempSerializer(data=request.data)
+        data = self.PrinterTempSerializer(data=request.data)
         data.is_valid(raise_exception=True)
 
-        set_printer_bed_temperature(
+        set_printer_temperature(
             printer_id=kwargs["printer_id"],
-            temperature=data.validated_data["temperature"]
+            **data.validated_data
         )
 
         return Response(
@@ -166,52 +167,3 @@ class PrinterSetBedTemperatureApi(APIView):
             },
             status=status.HTTP_200_OK
         )
-
-
-class PrinterSetToolTemperature(APIView):
-
-    class InputSerializer(serializers.Serializer):
-        temperatures = serializers.ListField(child=serializers.IntegerField())
-
-    def get_serializer(self):
-        return self.InputSerializer()
-
-    def post(self, request, **kwargs):
-
-        data = self.InputSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        set_printer_tool_temperature(
-            kwargs["printer_id"], data.validated_data["temperatures"]
-        )
-
-        return Response(
-            data={
-                "status": """
-                    The temperatures for the tools have been set successfully
-                """
-            },
-            status=status.HTTP_200_OK)
-
-
-class PrinterSetChamberTemperature(APIView):
-
-    class ChamberTemperatureSerializer(serializers.Serializer):
-        temperature = serializers.IntegerField()
-
-    def get_serializer(self):
-        return self.ChamberTemperatureSerializer()
-
-    def post(self, request, **kwargs):
-        data = self.ChamberTemperatureSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-
-        set_printer_chamber_temperature(
-            kwargs["printer_id"], data.validated_data["temperature"])
-
-        return Response(
-            data={
-                "status": """
-                    The temperature for the chamber has been set successfully
-                """
-            },
-            status=status.HTTP_200_OK)

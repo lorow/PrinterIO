@@ -18,7 +18,8 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
 
     if not check_if_printer_is_connected(get_printer(printer_id)):
         raise ServiceUnavailable(
-            "The printer is not connected, check your connection")
+            "The printer is not connected, check your connection"
+        )
 
     # try grabbing the queue by given printer, if it passes then simply add a model to it and notify the manager
     # if it fails, then create it and start printing
@@ -148,103 +149,62 @@ def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> 
     )
 
 
-def set_printer_bed_temperature(printer_id: int, temperature: int) -> Printer:
+def set_printer_temperature(
+    printer_id: int,
+    tool_type: str,
+    temperatures: list
+) -> None:
 
-    printer = get_printer(printer_id)
-
-    if not check_if_printer_is_connected(printer):
-        print("CHUJ")
-        raise ServiceUnavailable(
-            "The printer is not connected, check your connection"
-        )
-
-    temperature_endpoint = "/api/printer/bed"
-    payload = {
-        "command": "target",
-        "target": temperature
+    endpoint_by_tool = {
+        "bed": "/api/printer/bed",
+        "head": "/api/printer/tool",
+        "chamber": "/api/printer/chamber",
     }
 
-    req = issue_command_to_printer(
-        printer_ip=printer.ip_address,
-        printer_port=printer.port_number,
-        endpoint=temperature_endpoint,
-        api_key=printer.X_Api_Key,
-        json=payload
-    )
-
-    if req.status_code == 409:
-        raise ValidationError("The printer is not operational")
-
-    return printer
-
-
-def set_printer_tool_temperature(printer_id: int, temperatures: list) -> Printer:
-
     printer = get_printer(printer_id)
+
     if not check_if_printer_is_connected(printer):
         raise ServiceUnavailable(
-            "The printer is not connected, check your connection")
+            "Given printer is not connected, check your connections"
+        )
 
-    if len(temperatures) > printer.number_of_extruders:
-        raise ValidationError(
-            "Too many temperature values provided, this printer only supports {ext} extrudes".format(
-                ext=printer.number_of_extruders
+    payload = {
+        "command": "target",
+    }
+
+    if tool_type == "bed" or tool_type == "chamber":
+        # simple task we have, one temperature set we can
+        payload["target"] = temperatures[0]
+
+    if tool_type == "head":
+        # validate if we ain't exceeding the amout of toolheads we can handle
+
+        if len(temperatures) > printer.number_of_extruders:
+            raise ValidationError(
+                f"Too many temperatures were provided: {len(temperatures)}"
             )
+
+        # octoprint supports multi-tool temp only this way
+        payload["targets"] = {}
+
+        # we gotta label them
+        for tool_id in range(len(temperatures)):
+            payload["targets"][f"tool{tool_id}"] = temperatures[tool_id]
+
+    # now that we have the payload specified, make a req
+    try:
+        req = issue_command_to_printer(
+            printer_ip=printer.ip_address,
+            printer_port=printer.port_number,
+            endpoint=endpoint_by_tool[tool_type],
+            api_key=printer.X_Api_Key,
+            json=payload
         )
 
-    tool_temperature_endpoint = "/api/printer/tool"
-
-    payload = dict()
-    payload["command"] = "target"
-    payload["targets"] = {}
-
-    for temperature_id in range(len(temperatures)):
-        payload["targets"]["tool{tool_id}".format(
-            tool_id=temperature_id)] = temperatures[temperature_id]
-
-    req = issue_command_to_printer(
-        printer_ip=printer.ip_address,
-        printer_port=printer.port_number,
-        endpoint=tool_temperature_endpoint,
-        api_key=printer.X_Api_Key,
-        json=payload
-    )
-
-    if req.status_code == 409:
-        raise ValidationError("The printer is not operational")
-
-    return printer
-
-
-def set_printer_chamber_temperature(printer_id: int, temperature: int) -> Printer:
-    printer = get_printer(printer_id)
-
-    if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable(
-            "The printer is not connected, check your connection")
-
-    if not printer.has_heated_chamber:
-        raise ValidationError("The printer has no heated chamber")
-
-    chamber_temperature_endpoint = "/api/printer/chamber"
-
-    payload = {
-        "command": "target",
-        "target": temperature
-    }
-
-    req = issue_command_to_printer(
-        printer_ip=printer.ip_address,
-        printer_port=printer.port_number,
-        endpoint=chamber_temperature_endpoint,
-        api_key=printer.X_Api_Key,
-        json=payload
-    )
-
-    if req.status_code == 409:
-        raise ValidationError("The printer is not operational")
-
-    return printer
+        if req.status_code == 409:
+            raise ValidationError("The printer is not operational")
+    except KeyError:
+        raise ValidationError(f"Given tool is not supported: {tool_type}")
 
 
 def check_if_printer_is_connected(printer_to_check: Printer) -> bool:
