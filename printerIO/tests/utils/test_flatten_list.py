@@ -1,21 +1,18 @@
-from django.test import TestCase
 from printerIO.utils import flatten_list
 import pytest
 pytestmark = pytest.mark.django_db
 
 
-class FlattenListTests(TestCase):
+class TesttFlattenList:
 
-    def setUp(self) -> None:
-        self.util = flatten_list
+    def test_flatten_double_list(self):
+        assert flatten_list([[1, 2, 3]]) == [1, 2, 3]
 
-    def test_flattening_of_double_list(self):
-        self.assertEqual(self.util([[1, 2, 3]]), [1, 2, 3])
+    def test_flatten_n_list(self):
+        assert flatten_list([[1, 2, 3], [4, 5, 6]]) == [1, 2, 3, 4, 5, 6]
 
-    def test_flattening_of_two_lists_in_one_double(self):
-        self.assertEqual(self.util([[1, 2, 3], [4, 5, 6]]), [1, 2, 3, 4, 5, 6])
+    def test_fail_flatten_list(self):
+        """Should fail due to additional item not being a list"""
 
-    def test_flattening_of_double_list_with_additional_value_raises_type_error(self):
-
-        with self.assertRaises(TypeError):
-            self.util([[1, 2], 3])
+        with pytest.raises(TypeError):
+            flatten_list([[1, 2], 3])

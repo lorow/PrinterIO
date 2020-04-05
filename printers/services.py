@@ -267,7 +267,8 @@ def check_if_printer_is_connected(printer_to_check: Printer) -> bool:
         if not req.json()["current"]["state"] == "Operational":
             return False
 
-    except ConnectionError:
-        return False
+    except Exception as e:
+        # TODO investigate what exception really gets to here in that e
+        raise ServiceUnavailable(e)
 
     return True

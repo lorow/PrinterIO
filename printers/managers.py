@@ -3,7 +3,8 @@ import requests
 
 
 class PrintingManager:
-
+    # TODO: refactor it so that it manages the queue, not the other way
+    # TODO: as it is now
     def __init__(self):
         self.current_queues = {}
 
@@ -17,17 +18,26 @@ class PrintingManager:
         self.print(printer)
 
     def print(self, printer):
-        """When called, pops model from the list of models identified by printer and sends it to the octoprint
+        """
+        When called, pops model from the list of models
+        identified by printer and sends it to the octoprint
         instance
         """
+        from printers.services import check_if_printer_is_connected
 
         if self.__check_local_queue(printer):
             # if the queue isn't empty, simply proceed with printing
-            model = self.current_queues[printer].pop()
-            self.remove_model_from_queue(printer, model)
-            self.issue_printing_command(printer, model)
+            # but make sure that the printer is still connected
+            if check_if_printer_is_connected(printer):
+                model = self.current_queues[printer].pop()
+                self.remove_model_from_queue(printer, model)
+                self.issue_printing_command(printer, model)
 
-            printer.is_printing = True
+                printer.is_printing = True
+            else:
+                print("ERROR: printer is not connected, aborting")
+                printer.is_printing = False
+
             printer.save()
 
     def __check_local_queue(self, printer):

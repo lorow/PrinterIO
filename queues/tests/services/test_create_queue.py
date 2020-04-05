@@ -1,28 +1,50 @@
-from printerIO.factiories import PrinterFactory, PrintingModelFactory
-from queues.selectors import get_queue_by_queue_id
-from queues.services import create_queue
+from printerIO.factories import PrinterFactory, PrintingModelFactory
+from queues.selectors import get_queue_by_queue_id, get_all_queues
+from queues.services import create_queue, delete_queue, add_models_to_queue, remove_models_from_queue
 from collections import OrderedDict
-from django.test import TestCase
+import random
 import pytest
 pytestmark = pytest.mark.django_db
 
 
-class CreateQueueTest(TestCase):
+@pytest.fixture
+def queue_fixture():
+    printer = PrinterFactory()
+    models_to_print = [
+        PrintingModelFactory(),
+        PrintingModelFactory(),
+        PrintingModelFactory(),
+    ]
+    return create_queue(printer.id, models_to_print)
 
-    def setUp(self):
-        self.printer = PrinterFactory()
-        self.printing_models = OrderedDict()
-        self.printing_models['printing_models'] = [
+
+class TestQueueServices:
+
+    def test_create_queue(self):
+
+        printer = PrinterFactory()
+        models_to_print = [
             PrintingModelFactory(),
-            PrintingModelFactory()
+            PrintingModelFactory(),
+            PrintingModelFactory(),
         ]
+        created_queue = create_queue(printer.id, models_to_print)
 
-        self.service = create_queue
+        assert created_queue == get_queue_by_queue_id(created_queue.pk)
 
-    def test_whether_the_queue_is_being_created(self):
-        """
-            test whether or not the created queue
-            is the same as the one in the database
-        """
-        queue = self.service(self.printer.id, self.printing_models)
-        self.assertEquals(queue, get_queue_by_queue_id(queue.printer.id))
+    def test_delete_queue(self, queue_fixture):
+        delete_queue(queue_fixture)
+
+        assert list(get_all_queues()) == []
+
+    def test_add_models_to_queue(self, queue_fixture):
+        model_to_add = PrintingModelFactory()
+        new_queue = add_models_to_queue(queue_fixture, [model_to_add, ])
+
+        assert model_to_add in new_queue.printing_models.all()
+
+    def test_remove_models_from_queue(self, queue_fixture):
+        model_to_add = PrintingModelFactory()
+        new_queue = remove_models_from_queue(queue_fixture, [model_to_add, ])
+
+        assert model_to_add not in new_queue.printing_models.all()
