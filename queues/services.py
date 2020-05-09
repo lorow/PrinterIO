@@ -1,6 +1,4 @@
-from printerIO.utils import flatten_list
 from printerIO.models import Queue, Printer, PrintingModel
-from collections import OrderedDict
 from typing import Iterable
 
 
@@ -22,9 +20,7 @@ def delete_queue(queue: Queue) -> None:
     queue.delete()
 
 
-def add_models_to_queue(
-    queue: Queue, models_to_add: Iterable[PrintingModel]
-) -> Queue:
+def add_models_to_queue(queue: Queue, models_to_add: Iterable[PrintingModel]) -> Queue:
     """Service for adding models to the queue without re-adding existing ones"""
     for model in models_to_add:
         queue.printing_models.add(model.id)

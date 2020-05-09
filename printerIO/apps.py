@@ -3,5 +3,5 @@ from printers.managers import PrintingManager
 
 
 class PrinterIOConfig(AppConfig):
-    name = 'printerIO'
+    name = "printerIO"
     printing_manager = PrintingManager()

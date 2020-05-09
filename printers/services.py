@@ -17,9 +17,7 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     models["printing_models"] = [get_model(file_id)]
 
     if not check_if_printer_is_connected(get_printer(printer_id)):
-        raise ServiceUnavailable(
-            "The printer is not connected, check your connection"
-        )
+        raise ServiceUnavailable("The printer is not connected, check your connection")
 
     # try grabbing the queue by given printer, if it passes then simply add a model to it and notify the manager
     # if it fails, then create it and start printing
@@ -28,8 +26,7 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
         queue = get_queue_by_printer_id(printer_id=printer_id)
         new_queue = add_models_to_queue(queue, models)
 
-        PrinterIOConfig.printing_manager.refresh_queue(
-            new_queue, queue.printer)
+        PrinterIOConfig.printing_manager.refresh_queue(new_queue, queue.printer)
 
     except ValidationError:
 
@@ -53,7 +50,7 @@ def cancel_print_job(printer_id: int) -> None:
             printer_port=printer.port_number,
             endpoint=cancel_endpoint,
             api_key=printer.X_Api_Key,
-            json={"command": "cancel"}
+            json={"command": "cancel"},
         )
 
         # since we've canceled it, it's a good idea to update the printer
@@ -79,16 +76,15 @@ def pause_print_job(printer_id: int) -> None:
             api_key=printer.X_Api_Key,
             json={
                 "command": "pause",
-                "action": "pause" if printer.is_paused else "resume"
-            }
+                "action": "pause" if printer.is_paused else "resume",
+            },
         )
 
         is_currently_printing = printer.is_paused
         printer.is_paused = not is_currently_printing
         printer.save()
     else:
-        raise ValidationError(
-            "Cannot pause since the printer isn't currently printing")
+        raise ValidationError("Cannot pause since the printer isn't currently printing")
 
 
 def call_next_job(printer_id: int) -> None:
@@ -102,8 +98,7 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
     printer = get_printer(printer_id)
 
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable(
-            "The printer is not connected, check connection")
+        raise ServiceUnavailable("The printer is not connected, check connection")
 
     command_endpoint = "/api/printer/command"
 
@@ -112,7 +107,7 @@ def execute_gcode_commands(printer_id: int, commands: str) -> None:
         printer_port=printer.port_number,
         endpoint=command_endpoint,
         api_key=printer.X_Api_Key,
-        json={"commands": commands.split(',')}
+        json={"commands": commands.split(",")},
     )
 
 
@@ -125,17 +120,17 @@ def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> 
         raise ValidationError("You must provide both, the amount and the axis")
 
     if not check_if_printer_is_connected(printer):
-        raise ServiceUnavailable(
-            "The printer is not connected, check connection")
+        raise ServiceUnavailable("The printer is not connected, check connection")
 
     command_endpoint = "/api/printer/printhead"
 
-    demanded_directions = axis.split(',')
+    demanded_directions = axis.split(",")
     provided_amounts = [int(value) for value in values.split(",")]
 
     if not len(demanded_directions) == len(provided_amounts):
         raise ValidationError(
-            "You must provide an equal amount of values for given amount of directions")
+            "You must provide an equal amount of values for given amount of directions"
+        )
 
     payload = dict(zip(demanded_directions, provided_amounts))
     payload["command"] = "jog"
@@ -145,14 +140,12 @@ def move_axis_printer(printer_id: int = None, axis: str = None, values=None) -> 
         printer_port=printer.port_number,
         endpoint=command_endpoint,
         api_key=printer.X_Api_Key,
-        json=payload
+        json=payload,
     )
 
 
 def set_printer_temperature(
-    printer_id: int,
-    tool_type: str,
-    temperatures: list
+    printer_id: int, tool_type: str, temperatures: list
 ) -> None:
 
     endpoint_by_tool = {
@@ -198,7 +191,7 @@ def set_printer_temperature(
             printer_port=printer.port_number,
             endpoint=endpoint_by_tool[tool_type],
             api_key=printer.X_Api_Key,
-            json=payload
+            json=payload,
         )
 
         if req.status_code == 409:
@@ -216,12 +209,12 @@ def check_if_printer_is_connected(printer_to_check: Printer) -> bool:
             url="http://{ip}:{port}{endpoint}".format(
                 ip=printer_to_check.ip_address,
                 port=printer_to_check.port_number,
-                endpoint=connection_endpoint
+                endpoint=connection_endpoint,
             ),
             headers={
                 "X-Api-Key": printer_to_check.X_Api_Key,
-                "Content-Type": "application/json"
-            }
+                "Content-Type": "application/json",
+            },
         )
 
         if not req.json()["current"]["state"] == "Operational":

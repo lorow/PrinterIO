@@ -1,16 +1,14 @@
 from printers.services import check_if_printer_is_connected
-from printerIO.factories import PrinterFactory
+from printerIO.tests.factories import PrinterFactory
 from printers.exceptions import ServiceUnavailable
 import responses
 import pytest
+
 pytestmark = pytest.mark.django_db
 
 
 class TestPrinterConnectionService:
-
-    def test_check_if_printer_is_connected_fails_due_to_no_connection(
-        self
-    ) -> None:
+    def test_check_if_printer_is_connected_fails_due_to_no_connection(self) -> None:
         """
             Tests whether or not the connection-checking
             service will return False as to the current state of
@@ -20,11 +18,10 @@ class TestPrinterConnectionService:
         with responses.RequestsMock() as resp:
             resp.add(
                 resp.GET,
-                'http://{printer_ip}:{printer_port}/api/connection'.format(
-                    printer_ip=printer.ip_address,
-                    printer_port=printer.port_number
+                "http://{printer_ip}:{printer_port}/api/connection".format(
+                    printer_ip=printer.ip_address, printer_port=printer.port_number
                 ),
-                json={"current": {"state": "Disconnected"}}
+                json={"current": {"state": "Disconnected"}},
             )
 
             assert not check_if_printer_is_connected(printer)
@@ -39,17 +36,16 @@ class TestPrinterConnectionService:
         with responses.RequestsMock() as resp:
             resp.add(
                 resp.GET,
-                'http://{printer_ip}:{printer_port}/api/connection'.format(
-                    printer_ip=printer.ip_address,
-                    printer_port=printer.port_number
+                "http://{printer_ip}:{printer_port}/api/connection".format(
+                    printer_ip=printer.ip_address, printer_port=printer.port_number
                 ),
-                json={"current": {"state": "Operational"}}
+                json={"current": {"state": "Operational"}},
             )
 
             assert check_if_printer_is_connected(printer)
 
     def test_check_if_printer_is_connected_fails_due_to_server_being_offline(
-            self
+        self,
     ) -> None:
         """
         Tests whether or not the connection-checking service will return False

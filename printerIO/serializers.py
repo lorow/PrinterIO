@@ -12,23 +12,28 @@ class PrintingQualitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PrintedModelQuality
-        fields = '__all__'
+        fields = "__all__"
 
 
 class FilamentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Filament
         fields = (
-            'name', 'producer', 'colour', 'diameter', 'weight',
-            'filament_left', 'filament_type', 'price')
+            "name",
+            "producer",
+            "colour",
+            "diameter",
+            "weight",
+            "filament_left",
+            "filament_type",
+            "price",
+        )
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = TaskCategory
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -36,11 +41,10 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProblemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Problem
-        fields = '__all__'
+        fields = "__all__"

@@ -1,9 +1,13 @@
-from printerIO.factories import PrinterFactory, PrintingModelFactory
+from printerIO.tests.factories import PrinterFactory, PrintingModelFactory
 from queues.selectors import get_queue_by_queue_id, get_all_queues
-from queues.services import create_queue, delete_queue, add_models_to_queue, remove_models_from_queue
-from collections import OrderedDict
-import random
+from queues.services import (
+    create_queue,
+    delete_queue,
+    add_models_to_queue,
+    remove_models_from_queue,
+)
 import pytest
+
 pytestmark = pytest.mark.django_db
 
 
@@ -19,7 +23,6 @@ def queue_fixture():
 
 
 class TestQueueServices:
-
     def test_create_queue(self):
 
         printer = PrinterFactory()
@@ -39,12 +42,12 @@ class TestQueueServices:
 
     def test_add_models_to_queue(self, queue_fixture):
         model_to_add = PrintingModelFactory()
-        new_queue = add_models_to_queue(queue_fixture, [model_to_add, ])
+        new_queue = add_models_to_queue(queue_fixture, [model_to_add,])
 
         assert model_to_add in new_queue.printing_models.all()
 
     def test_remove_models_from_queue(self, queue_fixture):
         model_to_add = PrintingModelFactory()
-        new_queue = remove_models_from_queue(queue_fixture, [model_to_add, ])
+        new_queue = remove_models_from_queue(queue_fixture, [model_to_add,])
 
         assert model_to_add not in new_queue.printing_models.all()

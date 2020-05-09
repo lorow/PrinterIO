@@ -11,11 +11,9 @@ class Filament(models.Model):
     colour = models.CharField(max_length=100, default="")
     diameter = models.FloatField(
         max_length=5,
-        choices=(
-            (1.75, "1.75mm diameter"),
-            (3, "3mm diameter")
-        ),
-        default=1.75)
+        choices=((1.75, "1.75mm diameter"), (3, "3mm diameter")),
+        default=1.75,
+    )
     weight = models.FloatField(default=1)  # in kilos, so 0.6KG or 1KG
     filament_left = models.FloatField(default=1)  # also in kilos
     filament_type = models.CharField(max_length=250, default="PLA")
@@ -25,16 +23,10 @@ class Filament(models.Model):
 class Printer(models.Model):
     objects = models.Manager()
     name = models.TextField()
-    thumbnail = models.ImageField(
-        upload_to="Images/", default="Images/Group_21.png")
+    thumbnail = models.ImageField(upload_to="Images/", default="Images/Group_21.png")
     build_volume = models.TextField()
     printer_type = models.CharField(
-        max_length=2,
-        choices=(
-            ("CR", "Cartesian"),
-            ("DL", "Delta")
-        ),
-        default="CR"
+        max_length=2, choices=(("CR", "Cartesian"), ("DL", "Delta")), default="CR"
     )
     ip_address = models.GenericIPAddressField(default="0.0.0.0")
     port_number = models.IntegerField(default=5000)
@@ -47,9 +39,7 @@ class Printer(models.Model):
     filament = models.ManyToManyField(Filament, blank=True)
 
     def __str__(self):
-        return '{name} of type {type}'.format(
-            name=self.name,
-            type=self.printer_type)
+        return "{name} of type {type}".format(name=self.name, type=self.printer_type)
 
 
 class PrintingModel(models.Model):
@@ -64,11 +54,7 @@ class PrintingModel(models.Model):
 
 class Queue(models.Model):
     objects = models.Manager()
-    printer = models.OneToOneField(
-        Printer,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    printer = models.OneToOneField(Printer, on_delete=models.CASCADE, primary_key=True,)
     printing_models = models.ManyToManyField(PrintingModel)
 
     def __str__(self):
@@ -77,13 +63,12 @@ class Queue(models.Model):
 
 class PrintedModelQuality(models.Model):
     objects = models.Manager()
-    printer = models.ForeignKey(Printer,
-                                related_name="used_printer",
-                                on_delete=models.CASCADE)
+    printer = models.ForeignKey(
+        Printer, related_name="used_printer", on_delete=models.CASCADE
+    )
     model = models.ForeignKey(
-        PrintingModel,
-        related_name="used_model",
-        on_delete=models.CASCADE)
+        PrintingModel, related_name="used_model", on_delete=models.CASCADE
+    )
     quality_number = models.IntegerField(
         validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
@@ -104,9 +89,7 @@ class Task(models.Model):
     content = models.TextField(blank=True)
     created = models.DateField(default=timezone.now)
     due = models.DateField(default=timezone.now, blank=True)
-    category = models.ForeignKey(
-        TaskCategory,
-        on_delete=models.CASCADE)
+    category = models.ForeignKey(TaskCategory, on_delete=models.CASCADE)
 
     objects = models.Manager()
 

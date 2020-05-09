@@ -1,6 +1,6 @@
 import factory
 from faker import Factory as FakerFactory
-from printerIO.factiories import PrinterFactory, PrintingModelFactory
+from printerIO.factiories import PrinterFactory
 from printerIO.models import Queue
 
 faker = FakerFactory.create()

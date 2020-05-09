@@ -1,10 +1,10 @@
 from printerIO.utils import flatten_list
 import pytest
+
 pytestmark = pytest.mark.django_db
 
 
 class TesttFlattenList:
-
     def test_flatten_double_list(self):
         assert flatten_list([[1, 2, 3]]) == [1, 2, 3]
 

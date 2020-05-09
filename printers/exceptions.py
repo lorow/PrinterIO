@@ -4,8 +4,8 @@ from rest_framework import status
 
 class ServiceUnavailable(APIException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-    default_detail = 'Service is unavailable, try again in a few minuts'
-    default_code = 'service unavailable'
+    default_detail = "Service is unavailable, try again in a few minuts"
+    default_code = "service unavailable"
 
     def __init__(self, detail=None, code=None):
         if detail is None:

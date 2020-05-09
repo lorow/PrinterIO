@@ -1,9 +1,8 @@
 from printers.services import set_printer_temperature
-from rest_framework.exceptions import ValidationError
-from printers.exceptions import ServiceUnavailable
-from printerIO.factories import PrinterFactory
+from printerIO.tests.factories import PrinterFactory
 import responses
 import pytest
+
 pytestmark = pytest.mark.django_db
 
 
@@ -13,16 +12,12 @@ def printer_fixture():
 
 
 class TestSetPrinterTemperature:
-
     @pytest.mark.parametrize(
-        "printer_tool,printer_temp",
-        [
-            ("bed", [60]),
-            ("tool", [120]),
-            ("chamber", [60])
-        ]
+        "printer_tool,printer_temp", [("bed", [60]), ("tool", [120]), ("chamber", [60])]
     )
-    def test_set_printer_bed_temperature(self, printer_fixture, printer_tool, printer_temp):
+    def test_set_printer_bed_temperature(
+        self, printer_fixture, printer_tool, printer_temp
+    ):
         """
             This will fail when the fucntion raises either ValidationError
             or ServiceUnavailable due to
@@ -32,29 +27,23 @@ class TestSetPrinterTemperature:
             # we need to mock the connection test first
             resp.add(
                 resp.GET,
-                f'http://{printer_fixture.ip_address}:{printer_fixture.port_number}/api/connection',
-                json={"current": {"state": "Operational"}}
+                f"http://{printer_fixture.ip_address}:{printer_fixture.port_number}/api/connection",
+                json={"current": {"state": "Operational"}},
             )
             # then we can mock the tool connection
             resp.add(
-                resp.POST, 'http://{printer_ip}:{printer_port}/api/printer/{printer_tool}'.format(
+                resp.POST,
+                "http://{printer_ip}:{printer_port}/api/printer/{printer_tool}".format(
                     printer_ip=printer_fixture.ip_address,
                     printer_port=printer_fixture.port_number,
-                    printer_tool=printer_tool
+                    printer_tool=printer_tool,
                 ),
                 adding_headers={
                     "X-Api-Key": printer_fixture.X_Api_Key,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                json={
-                    "command": "target",
-                    "target": printer_temp
-                },
-                status=200
+                json={"command": "target", "target": printer_temp},
+                status=200,
             )
 
-            set_printer_temperature(
-                printer_fixture.pk,
-                printer_tool,
-                [60]
-            )
+            set_printer_temperature(printer_fixture.pk, printer_tool, [60])
