@@ -1,6 +1,5 @@
 from printerIO.models import Queue, Printer
 from rest_framework import viewsets
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .serializers import QueueSerializer
 import django_filters
@@ -12,18 +11,22 @@ class QueueViewset(viewsets.ModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_fields = ("printer",)
 
-    def create(self, request, **kwargs):
-        serializer = QueueSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def handle_printer_id(self, request, **kwargs):
+        # due to the way drf-nested handles the routing
+        # we have to manually add the printer param
+        # so that the drf knows what's up
 
-        data = serializer.validated_data
-        data["printer"] = get_object_or_404(Printer, pk=kwargs["printers_pk"])
+        if "printer" not in request.data:
+            request.data["printer"] = get_object_or_404(
+                Printer, pk=kwargs["printers_pk"]
+            )
 
-        printing_models = data.pop("printing_models")
-        queue = Queue.objects.create(**data)
-        queue.printing_models.set(printing_models)
-        queue.save()
+        return request
 
-        return Response(data)
+    def create(self, request, *args, **kwargs):
+        req = self.handle_printer_id(request, kwargs)
+        return super().create(request=req, *args, **kwargs)
 
-    # TODO override update too
+    def update(self, request, *args, **kwargs):
+        req = self.handle_printer_id(request, kwargs)
+        return super().update(request=req, *args, **kwargs)
