@@ -1,4 +1,6 @@
 from printerIO.models import Queue, Printer
+
+# from printerIO.apps import PrinterIOConfig
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from .serializers import QueueSerializer
@@ -25,8 +27,10 @@ class QueueViewset(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         req = self.handle_printer_id(request, kwargs)
+        # PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
         return super().create(request=req, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         req = self.handle_printer_id(request, kwargs)
+        # PrinterIOConfig.printing_manager.get_new_queue(queue, queue.printer)
         return super().update(request=req, *args, **kwargs)

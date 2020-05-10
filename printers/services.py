@@ -1,17 +1,21 @@
 from queues.services import add_models_to_queue, create_queue
 from queues.selectors import get_queue_by_printer_id
 from printerIO.apps import PrinterIOConfig
-from rest_framework.exceptions import *
+from rest_framework.exceptions import ValidationError
 from models.selectors import get_model
 from collections import OrderedDict
-from .exceptions import *
-from .selectors import *
-from .utils import *
+from printerIO.models import Printer
+from .exceptions import ServiceUnavailable
+from .selectors import get_printer
+from .utils import issue_command_to_printer
 import requests
 
 
 def start_print_job(printer_id: int, file_id: int) -> Printer:
-    """Service for implicitly creating a one-file-long queue and letting the octoprint start the job"""
+    """
+    Service for implicitly creating a one-file-long
+    queue and letting the octoprint start the job
+    """
 
     models = OrderedDict()
     models["printing_models"] = [get_model(file_id)]
@@ -19,7 +23,8 @@ def start_print_job(printer_id: int, file_id: int) -> Printer:
     if not check_if_printer_is_connected(get_printer(printer_id)):
         raise ServiceUnavailable("The printer is not connected, check your connection")
 
-    # try grabbing the queue by given printer, if it passes then simply add a model to it and notify the manager
+    # try grabbing the queue by given printer,
+    # if it passes then simply add a model to it and notify the manager
     # if it fails, then create it and start printing
     try:
         # from queue app
@@ -88,8 +93,13 @@ def pause_print_job(printer_id: int) -> None:
 
 
 def call_next_job(printer_id: int) -> None:
-    """An utility service, creating for letting printing manager know that it should issue next job more easily
-    This should always be called, even if there is no more work to do, it will close everything automatically"""
+    """
+    An utility service, creating for letting
+    printing manager know that it should issue next job more easily
+    This should always be called,
+    even if there is no more work to do,
+    it will close everything automatically
+    """
     PrinterIOConfig.printing_manager.next_job(get_printer(printer_id))
 
 
@@ -201,7 +211,10 @@ def set_printer_temperature(
 
 
 def check_if_printer_is_connected(printer_to_check: Printer) -> bool:
-    """Service for checking whether or not the printer in question if actually connected"""
+    """
+    Service for checking whether or not the printer
+    in question if actually connected
+    """
     connection_endpoint = "/api/connection"
     # The connection should read Operational
     try:
