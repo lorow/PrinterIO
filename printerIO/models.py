@@ -5,7 +5,6 @@ from django.db import models
 
 # we will support only FDM printers for a while, so no resin just yet
 class Filament(models.Model):
-    objects = models.Manager()
     name = models.CharField(max_length=250, default="")
     producer = models.CharField(max_length=250, default="")
     colour = models.CharField(max_length=100, default="")
@@ -21,7 +20,6 @@ class Filament(models.Model):
 
 
 class Printer(models.Model):
-    objects = models.Manager()
     name = models.TextField()
     thumbnail = models.ImageField(upload_to="Images/", default="Images/Group_21.png")
     build_volume = models.TextField()
@@ -43,7 +41,6 @@ class Printer(models.Model):
 
 
 class PrintingModel(models.Model):
-    objects = models.Manager()
     file = models.FileField()
     name = models.TextField()
     thing_dimensions = models.TextField()
@@ -53,7 +50,6 @@ class PrintingModel(models.Model):
 
 
 class Queue(models.Model):
-    objects = models.Manager()
     printer = models.OneToOneField(Printer, on_delete=models.CASCADE, primary_key=True,)
     printing_models = models.ManyToManyField(PrintingModel)
 
@@ -62,7 +58,6 @@ class Queue(models.Model):
 
 
 class PrintedModelQuality(models.Model):
-    objects = models.Manager()
     printer = models.ForeignKey(
         Printer, related_name="used_printer", on_delete=models.CASCADE
     )
@@ -78,7 +73,6 @@ class PrintedModelQuality(models.Model):
 
 class TaskCategory(models.Model):
     name = models.CharField(max_length=100)
-    objects = models.Manager()
 
     def __str__(self):
         return self.name
@@ -91,8 +85,6 @@ class Task(models.Model):
     due = models.DateField(default=timezone.now, blank=True)
     category = models.ForeignKey(TaskCategory, on_delete=models.CASCADE)
 
-    objects = models.Manager()
-
     class Meta:
         ordering = ["-created"]
 
@@ -101,7 +93,6 @@ class Task(models.Model):
 
 
 class Problem(models.Model):
-    objects = models.Manager()
     severity = models.IntegerField(
         validators=[MaxValueValidator(3), MinValueValidator(1)]
     )

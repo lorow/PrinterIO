@@ -20,12 +20,10 @@ from django.conf import settings
 from django.views.static import serve
 
 # from rest_framework.documentation import include_docs_urls
-from printerIO.routers import router
+from printerIO.routers import router, queue_router
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from printers.views import *
-from queues.views import *
 
 
 schema_view = get_schema_view(
@@ -54,19 +52,7 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("api/", include(router.urls)),
-    path("api/printers/<int:printer_id>/queue", QueuesListApi.as_view()),
-    path("api/printers/<int:printer_id>/queue/create", QueueCreateApi.as_view()),
-    path("api/printers/<int:printer_id>/queue/delete", QueueDeleteApi.as_view()),
-    path(
-        "api/printers/<int:printer_id>/queue/models/add", AddModelsToQueueApi.as_view()
-    ),
-    path(
-        "api/printers/<int:printer_id>/queue/models/remove",
-        RemoveModelsFromQueueApi.as_view(),
-    ),
-    path(
-        "api/printers/<int:printer_id>/queue/next-job", PrinterStartNextJobApi.as_view()
-    ),
+    path("api/", include(queue_router.urls)),
     path("admin/", admin.site.urls),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),

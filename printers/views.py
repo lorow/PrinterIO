@@ -8,14 +8,12 @@ from .serializers import (
     PrinterTempSerializer,
 )
 from .services import *
-from rest_framework.views import APIView
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from printerIO.models import Printer
 import django_filters
 
 
-# Create your views here.
 class PrinterViewSet(viewsets.ModelViewSet):
     queryset = Printer.objects.all()
     serializer_class = PrinterSerializer
@@ -139,18 +137,17 @@ class PrinterViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @swagger_auto_schema(request_body=serializers.Serializer())
+    @action(detail=True, methods=["post"])
+    def next_job(self, request, pk=None):
+        """
+        API endpoint for letting the PrinterIO system know
+        that it can safely issue next print job
 
-class PrinterStartNextJobApi(APIView):
-    """
-    API endpoint for letting the PrinterIO system know
-    that it can safely issue next print job
-
-    NOTE: this should be called by the frontend only when the user
-    has been prompted that it is in fact safe to proceed
-    """
-
-    def post(self, request, **kwargs):
-        call_next_job(**kwargs)
+        NOTE: this should be called by the frontend only when the user
+        has been prompted that it is in fact safe to proceed
+        """
+        call_next_job(printer_id=pk)
         return Response(
             data={"status": "Started next job successfully"}, status=status.HTTP_200_OK
         )
